@@ -5,7 +5,20 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ["api.adil-baba.com", "shippo-static-v2.s3.amazonaws.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "api.adil-baba.com",
+        port: "",
+        pathname: "/**"
+      },
+      {
+        protocol: "https",
+        hostname: "shippo-static-v2.s3.amazonaws.com",
+        port: "",
+        pathname: "/**"
+      }
+    ]
   },
 }
 
