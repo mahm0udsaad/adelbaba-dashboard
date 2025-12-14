@@ -94,47 +94,47 @@ export default function QuotesPage() {
 
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+        <Card className="bg-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.quotesStatsTotal}</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-white">{t.quotesStatsTotal}</CardTitle>
+            <FileText className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{quotesResponse?.meta?.total || 0}</div>
+            <div className="text-2xl font-bold text-white">{quotesResponse?.meta?.total || 0}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.quotesStatsSubmitted}</CardTitle>
-            <Clock className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.quotesStatsSubmitted}</CardTitle>
+            <Clock className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               {quotesResponse?.data?.filter((q) => q.status === "Submitted").length || 0}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-orange-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.quotesStatsAwarded}</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.quotesStatsAwarded}</CardTitle>
+            <DollarSign className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               {quotesResponse?.data?.filter((q) => q.status === "Awarded").length || 0}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-red-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.quotesStatsWithdrawn}</CardTitle>
-            <AlertCircle className="h-4 w-4 text-gray-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.quotesStatsWithdrawn}</CardTitle>
+            <AlertCircle className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               {quotesResponse?.data?.filter((q) => q.status === "Withdrawn").length || 0}
             </div>
           </CardContent>

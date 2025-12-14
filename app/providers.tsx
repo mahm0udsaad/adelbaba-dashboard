@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { MockDataProvider } from "@/lib/mock-data-context"
 import { SessionProvider } from "next-auth/react"
 import { AuthProvider } from "@/src/contexts/auth-context"
+import { NotificationProvider } from "@/src/contexts/notification-context"
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
@@ -13,8 +14,10 @@ export default function Providers({ children }: { children: ReactNode }) {
       <MockDataProvider>
         <SessionProvider>
           <AuthProvider>
-            {children}
-            <Toaster richColors position="top-right" />
+            <NotificationProvider>
+              {children}
+              <Toaster richColors position="top-right" />
+            </NotificationProvider>
           </AuthProvider>
         </SessionProvider>
       </MockDataProvider>

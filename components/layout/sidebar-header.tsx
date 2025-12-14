@@ -2,9 +2,11 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Bell, Globe, X } from "lucide-react"
 import { useI18n } from "@/lib/i18n/context"
 import { NotificationsSheet } from "./notifications-sheet"
+import { useNotifications } from "@/src/contexts/notification-context"
 
 interface SidebarHeaderProps {
   sidebarOpen: boolean
@@ -14,6 +16,7 @@ interface SidebarHeaderProps {
 
 export function SidebarHeader({ sidebarOpen, setSidebarOpen, toggleLanguage }: SidebarHeaderProps) {
   const { t, isArabic } = useI18n()
+  const { unreadCount } = useNotifications()
   const [notificationsOpen, setNotificationsOpen] = useState(false)
 
   return (
@@ -41,11 +44,19 @@ export function SidebarHeader({ sidebarOpen, setSidebarOpen, toggleLanguage }: S
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 hover:bg-sidebar-accent"
+              className="h-8 w-8 p-0 hover:bg-sidebar-accent relative"
               title={t.notifications}
               onClick={() => setNotificationsOpen(true)}
             >
               <Bell className="h-4 w-4" />
+              {unreadCount > 0 && (
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center rounded-full"
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </Badge>
+              )}
             </Button>
 
             <Button

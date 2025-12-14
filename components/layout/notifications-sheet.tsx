@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -10,14 +10,16 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Skeleton } from "@/components/ui/skeleton"
 import { useI18n } from "@/lib/i18n/context"
 import type { Notification } from "@/src/services/notifications-api"
-import { notificationsApi } from "@/src/services/notifications-api"
+import { useNotifications } from "@/src/contexts/notification-context"
+import { CheckCheck, Wifi, WifiOff } from "lucide-react"
 
 interface NotificationsSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-function humanizeType(type: string): string {
+function humanizeType(type: string | undefined): string {
+  if (!type) return "Notification"
   return type
     .split(/[.\-_]/g)
     .filter(Boolean)
@@ -42,7 +44,7 @@ function extractTitle(notification: Notification): string {
     }
   }
 
-  return humanizeType(type)
+  return humanizeType(type) || "Notification"
 }
 
 function extractMessage(notification: Notification): string | undefined {
@@ -86,43 +88,41 @@ function formatTimestamp(timestamp: string | null | undefined, locale: string): 
 
 export function NotificationsSheet({ open, onOpenChange }: NotificationsSheetProps) {
   const { t, language, isArabic } = useI18n()
-  const [loading, setLoading] = useState(false)
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [hasFetched, setHasFetched] = useState(false)
+  const { notifications, isLoading, error, isConnected, refreshNotifications, markAsRead } =
+    useNotifications()
 
   const locale = useMemo(() => (language === "ar" ? "ar-EG" : "en-US"), [language])
-
-  const fetchNotifications = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const response = await notificationsApi.list()
-      setNotifications(response?.data ?? [])
-      setHasFetched(true)
-    } catch (err) {
-      console.error("Failed to load notifications", err)
-      setError(t.failedToLoadNotifications)
-    } finally {
-      setLoading(false)
-    }
-  }, [t])
-
-  useEffect(() => {
-    if (!open) return
-    fetchNotifications()
-  }, [open, fetchNotifications])
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side={isArabic ? "left" : "right"} className="sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>{t.notifications}</SheetTitle>
-          <SheetDescription>{t.notificationsSheetSubtitle}</SheetDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <SheetTitle>{t.notifications}</SheetTitle>
+              <SheetDescription>{t.notificationsSheetSubtitle}</SheetDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              {isConnected ? (
+                <Wifi className="h-4 w-4 text-green-500" title="Connected to real-time notifications" />
+              ) : (
+                <WifiOff className="h-4 w-4 text-muted-foreground" title="Not connected" />
+              )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={refreshNotifications}
+                disabled={isLoading}
+                title="Refresh notifications"
+              >
+                <CheckCheck className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </SheetHeader>
 
         <div className="flex flex-1 flex-col gap-4 overflow-hidden">
-          {loading ? (
+          {isLoading ? (
             <div className="space-y-3">
               {[0, 1, 2, 3].map((index) => (
                 <Skeleton key={index} className="h-20 w-full" />
@@ -133,12 +133,12 @@ export function NotificationsSheet({ open, onOpenChange }: NotificationsSheetPro
               <AlertTitle>{t.failedToLoadNotifications}</AlertTitle>
               <AlertDescription className="flex flex-col gap-3">
                 <span>{error}</span>
-                <Button size="sm" variant="outline" onClick={fetchNotifications}>
+                <Button size="sm" variant="outline" onClick={refreshNotifications}>
                   {t.retry}
                 </Button>
               </AlertDescription>
             </Alert>
-          ) : notifications.length === 0 && hasFetched ? (
+          ) : notifications.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center rounded-md border border-dashed p-6 text-center">
               <div className="text-sm font-medium">{t.notificationsEmptyState}</div>
               <p className="mt-1 text-xs text-muted-foreground">{t.notificationsEmptyStateSubtitle}</p>
@@ -147,6 +147,7 @@ export function NotificationsSheet({ open, onOpenChange }: NotificationsSheetPro
             <ScrollArea className="h-full pr-2">
               <div className="space-y-3 pr-2">
                 {notifications.map((notification) => {
+                  if (!notification?.id) return null
                   const title = extractTitle(notification)
                   const message = extractMessage(notification)
                   const timestamp = formatTimestamp(notification.created_at, locale)
@@ -154,7 +155,8 @@ export function NotificationsSheet({ open, onOpenChange }: NotificationsSheetPro
                   return (
                     <div
                       key={notification.id}
-                      className="rounded-lg border bg-card p-4 shadow-sm transition hover:border-primary/50"
+                      className="rounded-lg border bg-card p-4 shadow-sm transition hover:border-primary/50 cursor-pointer"
+                      onClick={() => !notification.read_at && markAsRead(notification.id)}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-2">

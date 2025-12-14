@@ -2,10 +2,10 @@ import apiClient from "@/lib/axios"
 
 export interface Notification {
   id: string
-  type: string
-  data: Record<string, any>
-  read_at: string | null
-  created_at: string
+  type?: string
+  data?: Record<string, any>
+  read_at?: string | null
+  created_at?: string
 }
 
 export interface PaginatedResponse<T> {

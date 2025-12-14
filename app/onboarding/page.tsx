@@ -746,7 +746,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="overflow-y-scroll h-screen bg-amber-50 p-4">
+    <div className="overflow-y-scroll h-screen bg-[#ede5fd] p-4">
       <div className="max-w-6xl mx-auto">
         {/* Dashboard Button */}
         <div className="flex justify-end mb-4">

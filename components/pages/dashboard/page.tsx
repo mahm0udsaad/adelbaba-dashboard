@@ -176,53 +176,53 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
-        <Card>
+        <Card className="bg-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.newRFQs}</CardTitle>
-            <FileText className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.newRFQs}</CardTitle>
+            <FileText className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.newRfqs}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{stats.newRfqs}</div>
+            <p className="text-xs text-blue-100">
               {t.open || "Open"} {t.rfqs || "RFQs"}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.activeOrdersHeader || "Active Orders"}</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.activeOrdersHeader || "Active Orders"}</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.activeOrders}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{stats.activeOrders}</div>
+            <p className="text-xs text-purple-100">
               {t.pending || "Pending"} & {t.shipped || "Shipped"}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-orange-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.products || "Products"}</CardTitle>
-            <Package className="h-4 w-4 text-purple-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.products || "Products"}</CardTitle>
+            <Package className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProducts}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{stats.totalProducts}</div>
+            <p className="text-xs text-orange-100">
               {t.totalProducts || "Total products"}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-red-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.monthlyRevenue || "Monthly Revenue"}</CardTitle>
-            <DollarSign className="h-4 w-4 text-primary" />
+            <CardTitle className="text-sm font-medium text-white">{t.monthlyRevenue || "Monthly Revenue"}</CardTitle>
+            <DollarSign className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(stats.monthlyRevenue)}</div>
-            <p className="text-xs text-muted-foreground">This month</p>
+            <div className="text-2xl font-bold text-white">{formatCurrency(stats.monthlyRevenue)}</div>
+            <p className="text-xs text-red-100">This month</p>
           </CardContent>
         </Card>
       </div>

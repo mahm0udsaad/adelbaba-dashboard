@@ -126,64 +126,64 @@ function AnalyticsContent({ period, setPeriod }: { period: string; setPeriod: (v
 
       {/* Key Metrics */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.totalRevenue}</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-white">{t.totalRevenue}</CardTitle>
+            <DollarSign className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${(analyticsData.revenue?.totalRevenue || 0).toLocaleString()}</div>
-            <div className="flex items-center text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">${(analyticsData.revenue?.totalRevenue || 0).toLocaleString()}</div>
+            <div className="flex items-center text-xs text-blue-100">
               {(analyticsData.revenue?.revenueGrowth || 0) > 0 ? (
-                <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                <TrendingUp className="h-3 w-3 mr-1 text-green-200" />
               ) : (
-                <TrendingDown className="h-3 w-3 mr-1 text-red-500" />
+                <TrendingDown className="h-3 w-3 mr-1 text-red-200" />
               )}
               {Math.abs(analyticsData.revenue?.revenueGrowth || 0)}% {t.fromLastMonth}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.totalOrdersHeader}</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-white">{t.totalOrdersHeader}</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{(analyticsData.orders?.totalOrders || 0).toLocaleString()}</div>
-            <div className="flex items-center text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{(analyticsData.orders?.totalOrders || 0).toLocaleString()}</div>
+            <div className="flex items-center text-xs text-purple-100">
               {(analyticsData.orders?.orderGrowth || 0) > 0 ? (
-                <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                <TrendingUp className="h-3 w-3 mr-1 text-green-200" />
               ) : (
-                <TrendingDown className="h-3 w-3 mr-1 text-red-500" />
+                <TrendingDown className="h-3 w-3 mr-1 text-red-200" />
               )}
               {Math.abs(analyticsData.orders?.orderGrowth || 0)}% {t.fromLastMonth}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-orange-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.activeProducts}</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-white">{t.activeProducts}</CardTitle>
+            <Package className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.products?.activeProducts || 0}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{analyticsData.products?.activeProducts || 0}</div>
+            <p className="text-xs text-orange-100">
               {t.outOf} {analyticsData.products?.totalProducts || 0} {t.productsLower}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-red-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.activeBuyers}</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-white">{t.activeBuyers}</CardTitle>
+            <Users className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.buyers?.activeBuyers || 0}</div>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+            <div className="text-2xl font-bold text-white">{analyticsData.buyers?.activeBuyers || 0}</div>
+            <div className="flex items-center text-xs text-red-100">
+              <TrendingUp className="h-3 w-3 mr-1 text-green-200" />
               {analyticsData.buyers?.newBuyers || 0} {t.newThisMonth}
             </div>
           </CardContent>

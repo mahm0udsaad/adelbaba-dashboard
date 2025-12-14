@@ -119,36 +119,36 @@ export default function InventoryAnalyticsPage() {
 
       {!loading && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
+          <Card className="bg-blue-500">
             <CardHeader>
-              <CardTitle className="text-sm font-medium">{"In Stock"}</CardTitle>
+              <CardTitle className="text-sm font-medium text-white">{"In Stock"}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{(data?.inStock || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">{(data?.inStock || 0).toLocaleString()}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-purple-500">
             <CardHeader>
-              <CardTitle className="text-sm font-medium">{"Low Stock"}</CardTitle>
+              <CardTitle className="text-sm font-medium text-white">{"Low Stock"}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{(data?.lowStock || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">{(data?.lowStock || 0).toLocaleString()}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-orange-500">
             <CardHeader>
-              <CardTitle className="text-sm font-medium">{"Out of Stock"}</CardTitle>
+              <CardTitle className="text-sm font-medium text-white">{"Out of Stock"}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{(data?.outOfStock || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">{(data?.outOfStock || 0).toLocaleString()}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-red-500">
             <CardHeader>
-              <CardTitle className="text-sm font-medium">{t.totalValue}</CardTitle>
+              <CardTitle className="text-sm font-medium text-white">{t.totalValue}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${(data?.totalValue || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">${(data?.totalValue || 0).toLocaleString()}</div>
             </CardContent>
           </Card>
         </div>

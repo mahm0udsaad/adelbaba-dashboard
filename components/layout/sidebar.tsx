@@ -26,7 +26,7 @@ export function Sidebar({ sidebarOpen, setSidebarOpen, toggleLanguage }: Sidebar
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 z-40 w-72 bg-sidebar border-r border-sidebar-border transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+        "fixed inset-y-0 z-40 w-72 bg-[#ede5fd] border-r border-sidebar-border transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full",
         isArabic && "right-0 left-auto",
       )}

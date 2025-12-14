@@ -104,18 +104,12 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
   const [showShipDialog, setShowShipDialog] = useState(false)
-  const [showDisputeDialog, setShowDisputeDialog] = useState(false)
   const [language] = useState<"en" | "ar">("en")
 
   const [shipForm, setShipForm] = useState({
     carrier: "",
     tracking: "",
     method: "Air Freight",
-  })
-
-  const [disputeForm, setDisputeForm] = useState({
-    reason: "",
-    files: [] as string[],
   })
 
   const isArabic = language === "ar"
@@ -127,8 +121,56 @@ export default function OrderDetailPage() {
   const fetchOrder = async () => {
     try {
       setLoading(true)
-      const response = await apiClient.get(`/api/v1/supplier/orders/${params.id}`)
-      setOrder(response.data.data)
+      const response = await apiClient.get(`/v1/company/orders/${params.id}`)
+      const orderData = response.data.data || response.data
+      
+      // Map API response to frontend Order type
+      setOrder({
+        ...orderData,
+        buyerCompany: orderData.user?.name || "Unknown Buyer",
+        buyerContact: {
+          name: orderData.user?.name || "Unknown",
+          email: orderData.user?.email || "",
+          phone: orderData.user?.phone || "",
+        },
+        items: orderData.items?.map((item: any) => ({
+          productId: item.product?.id || item.id,
+          productName: item.product?.name || "Unknown Product",
+          sku: item.product?.sku || "",
+          qty: item.quantity || 0,
+          unitPrice: parseFloat(item.price_per_unit) || 0,
+          totalPrice: (item.quantity || 0) * (parseFloat(item.price_per_unit) || 0),
+        })) || [],
+        currency: "USD",
+        subtotal: parseFloat(orderData.total_amount) || 0,
+        shippingCost: parseFloat(orderData.shipping) || 0,
+        tax: parseFloat(orderData.tax) || 0,
+        total: parseFloat(orderData.total_amount) || 0,
+        tradeAssurance: {
+          enabled: false,
+          escrowStatus: null,
+          escrowAmount: 0,
+          protectionPeriod: 0,
+          releaseDate: null,
+        },
+        shipping: {
+          carrier: null,
+          tracking: null,
+          method: null,
+          etaDays: null,
+          shippedDate: null,
+          deliveredDate: null,
+        },
+        status: orderData.shipment_status || orderData.status || "pending",
+        priority: "normal",
+        paymentStatus: orderData.payment_status || "pending",
+        paymentMethod: "N/A",
+        createdAt: orderData.created_at,
+        updatedAt: orderData.updated_at,
+        notes: orderData.notes || "",
+        attachments: [],
+        id: orderData.order_number || `#${orderData.id}`,
+      })
     } catch (error) {
       console.error("Failed to fetch order:", error)
       toast({
@@ -146,7 +188,10 @@ export default function OrderDetailPage() {
     setActionLoading(true)
 
     try {
-      await apiClient.post(`/api/v1/supplier/orders/${params.id}/ship`, shipForm)
+      // Update shipment status to 'shipped'
+      await apiClient.patch(`/v1/company/orders/${params.id}/status`, {
+        status: "shipped",
+      })
       toast({
         title: isArabic ? "تم الشحن" : "Order Shipped",
         description: isArabic ? "تم تحديث حالة الطلب إلى مشحون" : "Order status updated to shipped",
@@ -164,20 +209,31 @@ export default function OrderDetailPage() {
     }
   }
 
-  const handleReleaseEscrow = async () => {
+  const handleDownloadInvoice = async () => {
     setActionLoading(true)
 
     try {
-      await apiClient.post(`/api/v1/supplier/orders/${params.id}/escrow/release`)
-      toast({
-        title: isArabic ? "تم تحرير الضمان" : "Escrow Released",
-        description: isArabic ? "تم تحرير أموال الضمان بنجاح" : "Escrow funds have been released successfully",
+      const blob = await apiClient.get(`/v1/company/orders/${params.id}/invoice`, {
+        responseType: "blob",
       })
-      fetchOrder()
+      
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([blob.data]))
+      const link = document.createElement("a")
+      link.href = url
+      link.setAttribute("download", `invoice-${order?.id}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      
+      toast({
+        title: isArabic ? "تم التنزيل" : "Downloaded",
+        description: isArabic ? "تم تنزيل الفاتورة بنجاح" : "Invoice downloaded successfully",
+      })
     } catch (error) {
       toast({
         title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "فشل في تحرير الضمان" : "Failed to release escrow",
+        description: isArabic ? "فشل في تنزيل الفاتورة" : "Failed to download invoice",
         variant: "destructive",
       })
     } finally {
@@ -189,7 +245,10 @@ export default function OrderDetailPage() {
     setActionLoading(true)
 
     try {
-      await apiClient.post(`/api/v1/orders/${params.id}/confirm-delivery`)
+      // Update shipment status to 'delivered'
+      await apiClient.patch(`/v1/company/orders/${params.id}/status`, {
+        status: "delivered",
+      })
       toast({
         title: isArabic ? "تم تأكيد التسليم" : "Delivery Confirmed",
         description: isArabic ? "تم تأكيد تسليم الطلب" : "Order delivery has been confirmed",
@@ -206,22 +265,22 @@ export default function OrderDetailPage() {
     }
   }
 
-  const handleCreateDispute = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleUpdateStatus = async (newStatus: string) => {
     setActionLoading(true)
 
     try {
-      await apiClient.post(`/api/v1/orders/${params.id}/disputes`, disputeForm)
-      toast({
-        title: isArabic ? "تم إنشاء النزاع" : "Dispute Created",
-        description: isArabic ? "تم إنشاء النزاع بنجاح" : "Dispute has been created successfully",
+      await apiClient.patch(`/v1/company/orders/${params.id}/status`, {
+        status: newStatus,
       })
-      setShowDisputeDialog(false)
+      toast({
+        title: isArabic ? "تم التحديث" : "Updated",
+        description: isArabic ? "تم تحديث حالة الطلب بنجاح" : "Order status updated successfully",
+      })
       fetchOrder()
     } catch (error) {
       toast({
         title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "فشل في إنشاء النزاع" : "Failed to create dispute",
+        description: isArabic ? "فشل في تحديث الحالة" : "Failed to update status",
         variant: "destructive",
       })
     } finally {
@@ -418,35 +477,6 @@ export default function OrderDetailPage() {
                 )}
 
                 <div className="flex gap-2 mt-4">
-                  {order.tradeAssurance.escrowStatus === "held" && order.status === "delivered" && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button size="sm">
-                          <CheckCircle className="h-4 w-4 mr-2" />
-                          {isArabic ? "تحرير الضمان" : "Release Escrow"}
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            {isArabic ? "تحرير أموال الضمان" : "Release Escrow Funds"}
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            {isArabic
-                              ? "هل أنت متأكد من أنك تريد تحرير أموال الضمان؟ هذا الإجراء لا يمكن التراجع عنه."
-                              : "Are you sure you want to release the escrow funds? This action cannot be undone."}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>{isArabic ? "إلغاء" : "Cancel"}</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleReleaseEscrow} disabled={actionLoading}>
-                            {isArabic ? "تحرير الضمان" : "Release Escrow"}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
-
                   {order.status === "shipped" && !order.shipping.deliveredDate && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -520,7 +550,7 @@ export default function OrderDetailPage() {
                 )}
               </div>
 
-              {order.status === "in_escrow" && !order.shipping.shippedDate && (
+              {(order.status === "processing" || order.status === "pending") && !order.shipping.shippedDate && (
                 <div className="mt-4">
                   <Dialog open={showShipDialog} onOpenChange={setShowShipDialog}>
                     <DialogTrigger asChild>
@@ -685,59 +715,59 @@ export default function OrderDetailPage() {
               <CardTitle>{isArabic ? "الإجراءات" : "Actions"}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {order.status !== "disputed" && order.status !== "cancelled" && (
-                <Dialog open={showDisputeDialog} onOpenChange={setShowDisputeDialog}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="w-full bg-transparent">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full bg-transparent"
+                onClick={handleDownloadInvoice}
+                disabled={actionLoading}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                {isArabic ? "تنزيل الفاتورة" : "Download Invoice"}
+              </Button>
+
+              {order.status === "pending" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-transparent"
+                  onClick={() => handleUpdateStatus("processing")}
+                  disabled={actionLoading}
+                >
+                  <Package className="h-4 w-4 mr-2" />
+                  {isArabic ? "بدء المعالجة" : "Start Processing"}
+                </Button>
+              )}
+
+              {order.status !== "cancelled" && order.status !== "delivered" && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full bg-transparent text-destructive">
                       <AlertTriangle className="h-4 w-4 mr-2" />
-                      {isArabic ? "إنشاء نزاع" : "Create Dispute"}
+                      {isArabic ? "إلغاء الطلب" : "Cancel Order"}
                     </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{isArabic ? "إنشاء نزاع" : "Create Dispute"}</DialogTitle>
-                      <DialogDescription>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>{isArabic ? "إلغاء الطلب" : "Cancel Order"}</AlertDialogTitle>
+                      <AlertDialogDescription>
                         {isArabic
-                          ? "أدخل سبب النزاع وأي مستندات داعمة"
-                          : "Enter dispute reason and any supporting documents"}
-                      </DialogDescription>
-                    </DialogHeader>
-
-                    <form onSubmit={handleCreateDispute} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="reason">{isArabic ? "سبب النزاع" : "Dispute Reason"} *</Label>
-                        <Textarea
-                          id="reason"
-                          placeholder={isArabic ? "اشرح سبب النزاع..." : "Explain the reason for dispute..."}
-                          value={disputeForm.reason}
-                          onChange={(e) => setDisputeForm({ ...disputeForm, reason: e.target.value })}
-                          required
-                          rows={4}
-                        />
-                      </div>
-
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setShowDisputeDialog(false)}
-                          className="bg-transparent"
-                        >
-                          {isArabic ? "إلغاء" : "Cancel"}
-                        </Button>
-                        <Button type="submit" disabled={actionLoading}>
-                          {actionLoading
-                            ? isArabic
-                              ? "جاري الإنشاء..."
-                              : "Creating..."
-                            : isArabic
-                              ? "إنشاء نزاع"
-                              : "Create Dispute"}
-                        </Button>
-                      </div>
-                    </form>
-                  </DialogContent>
-                </Dialog>
+                          ? "هل أنت متأكد من أنك تريد إلغاء هذا الطلب؟"
+                          : "Are you sure you want to cancel this order?"}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>{isArabic ? "إلغاء" : "Cancel"}</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleUpdateStatus("cancelled")}
+                        disabled={actionLoading}
+                        className="bg-destructive text-destructive-foreground"
+                      >
+                        {isArabic ? "إلغاء الطلب" : "Cancel Order"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </CardContent>
           </Card>

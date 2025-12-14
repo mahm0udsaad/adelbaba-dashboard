@@ -308,16 +308,16 @@ export default function RFQPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+        <Card className="bg-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.rfqStatsOpen}</CardTitle>
-            <FileText className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.rfqStatsOpen}</CardTitle>
+            <FileText className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-white">
                 {metricsLoading ? (
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                 ) : (
                   dashboardMetrics.openRFQs
                 )}
@@ -327,7 +327,7 @@ export default function RFQPage() {
                 variant="ghost"
                 onClick={fetchDashboardMetrics}
                 disabled={metricsLoading}
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 text-white hover:bg-blue-600"
               >
                 <RefreshCw className={`h-3 w-3 ${metricsLoading ? 'animate-spin' : ''}`} />
               </Button>
@@ -335,15 +335,15 @@ export default function RFQPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.rfqStatsSubmitted}</CardTitle>
-            <TrendingUp className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.rfqStatsSubmitted}</CardTitle>
+            <TrendingUp className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               {metricsLoading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               ) : (
                 dashboardMetrics.quotesSubmitted
               )}
@@ -351,15 +351,15 @@ export default function RFQPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-orange-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.rfqStatsAwarded}</CardTitle>
-            <DollarSign className="h-4 w-4 text-purple-600" />
+            <CardTitle className="text-sm font-medium text-white">{t.rfqStatsAwarded}</CardTitle>
+            <DollarSign className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               {metricsLoading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               ) : (
                 dashboardMetrics.awarded
               )}
@@ -367,15 +367,15 @@ export default function RFQPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-red-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t.rfqStatsWinRate}</CardTitle>
-            <TrendingUp className="h-4 w-4 text-primary" />
+            <CardTitle className="text-sm font-medium text-white">{t.rfqStatsWinRate}</CardTitle>
+            <TrendingUp className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               {metricsLoading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               ) : (
                 `${dashboardMetrics.winRate}%`
               )}

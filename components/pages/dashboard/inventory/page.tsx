@@ -470,47 +470,47 @@ export default function InventoryPage() {
         <TabsContent value="overview" className="space-y-4 mt-4">
           {/* Stats Cards */}
           <div className="grid grid-cols-2 gap-3">
-            <Card className="border-l-4 border-l-blue-500">
+            <Card className="border-l-4 border-l-blue-500 bg-blue-500">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Total Products</p>
-                    <p className="text-2xl font-bold">{overviewStats.totalProducts}</p>
+                    <p className="text-xs text-blue-100 font-medium">Total Products</p>
+                    <p className="text-2xl font-bold text-white">{overviewStats.totalProducts}</p>
                   </div>
-                  <Package className="h-8 w-8 text-blue-500 opacity-80" />
+                  <Package className="h-8 w-8 text-white opacity-80" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-l-4 border-l-orange-500">
+            <Card className="border-l-4 border-l-orange-500 bg-purple-500">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Low Stock Alerts</p>
-                    <p className="text-2xl font-bold text-orange-600">{overviewStats.lowStockCount}</p>
+                    <p className="text-xs text-purple-100 font-medium">Low Stock Alerts</p>
+                    <p className="text-2xl font-bold text-white">{overviewStats.lowStockCount}</p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-orange-500 opacity-80" />
+                  <AlertTriangle className="h-8 w-8 text-white opacity-80" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-l-4 border-l-green-500">
+            <Card className="border-l-4 border-l-green-500 bg-orange-500">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Total On Hand</p>
-                    <p className="text-2xl font-bold text-green-600">{overviewStats.totalOnHand.toLocaleString()}</p>
+                    <p className="text-xs text-orange-100 font-medium">Total On Hand</p>
+                    <p className="text-2xl font-bold text-white">{overviewStats.totalOnHand.toLocaleString()}</p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-green-500 opacity-80" />
+                  <TrendingUp className="h-8 w-8 text-white opacity-80" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-l-4 border-l-purple-500">
+            <Card className="border-l-4 border-l-purple-500 bg-red-500">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Reserved</p>
-                    <p className="text-2xl font-bold text-purple-600">{overviewStats.totalReserved.toLocaleString()}</p>
+                    <p className="text-xs text-red-100 font-medium">Reserved</p>
+                    <p className="text-2xl font-bold text-white">{overviewStats.totalReserved.toLocaleString()}</p>
                   </div>
-                  <Clock className="h-8 w-8 text-purple-500 opacity-80" />
+                  <Clock className="h-8 w-8 text-white opacity-80" />
                 </div>
               </CardContent>
             </Card>
