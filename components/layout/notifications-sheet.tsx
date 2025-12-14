@@ -90,7 +90,7 @@ export function NotificationsSheet({ open, onOpenChange }: NotificationsSheetPro
   const { t, language, isArabic } = useI18n()
   const { notifications, isLoading, error, isConnected, refreshNotifications, markAsRead } =
     useNotifications()
-
+  console.log(notifications)
   const locale = useMemo(() => (language === "ar" ? "ar-EG" : "en-US"), [language])
 
   return (
@@ -149,8 +149,10 @@ export function NotificationsSheet({ open, onOpenChange }: NotificationsSheetPro
                 {notifications.map((notification) => {
                   if (!notification?.id) return null
                   const title = extractTitle(notification)
-                  const message = extractMessage(notification)
-                  const timestamp = formatTimestamp(notification.created_at, locale)
+                  const message = notification.message
+                  // Prefer notification.timestamp if present, else fallback to created_at
+                  const rawTimestamp = notification.timestamp || notification.created_at
+                  const timestamp = rawTimestamp ? formatTimestamp(rawTimestamp, locale) : null
 
                   return (
                     <div
