@@ -1,20 +1,23 @@
 "use client"
 
 import { useCallback, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { AdsHeader } from "./components/AdsHeader"
 import { StatusFilter } from "./components/StatusFilter"
-import { CreateAdDialog } from "./components/CreateAdDialog"
 import { AdsList } from "./components/AdsList"
 import type { Ad } from "./components/types"
 import { useI18n } from "@/lib/i18n/context"
 import { useApiWithFallback } from "@/hooks/useApiWithFallback"
 import { adsApi, type AdRecord } from "@/src/services/ads-api"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { Plus } from "lucide-react"
 
 export default function AdsPage() {
   // Removed mock data usage; rely on real API only
   const [statusFilter, setStatusFilter] = useState("all")
-  const [createOpen, setCreateOpen] = useState(false)
-  const { isArabic } = useI18n()
+  const { t, isArabic } = useI18n()
+  const router = useRouter()
 
   const mapApiToUiAd = useCallback((r: AdRecord): Ad => {
     const statusMap: Record<string, Ad["status"]> = {
@@ -60,7 +63,7 @@ export default function AdsPage() {
     return []
   }, [])
 
-  const { data, loading, setData, refetch } = useApiWithFallback<Ad[]>({
+  const { data, loading } = useApiWithFallback<Ad[]>({
     fetcher: fetchAds,
     fallback: emptyFallback,
     // No deps needed; we filter client-side by status
@@ -72,20 +75,23 @@ export default function AdsPage() {
     return statusFilter === "all" ? src : src.filter((ad) => ad.status === statusFilter)
   }, [data, statusFilter])
 
-  const handleCreated = async () => {
-    await refetch()
-  }
+  const goToCreate = () => router.push("/dashboard/ads/new")
 
   return (
     <div className="p-4 space-y-6">
       <div className="flex items-center justify-between">
         <AdsHeader onExportComplete={async () => { /* no-op */ }} />
-        <CreateAdDialog onSuccess={handleCreated} open={createOpen} onOpenChange={setCreateOpen} />
+        <Link href="/dashboard/ads/new">
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            {t.createAd}
+          </Button>
+        </Link>
       </div>
 
       <StatusFilter value={statusFilter} onChange={setStatusFilter} />
 
-      <AdsList ads={ads} loading={loading} isArabic={isArabic} onCreateClick={() => setCreateOpen(true)} />
+      <AdsList ads={ads} loading={loading} isArabic={isArabic} onCreateClick={goToCreate} />
     </div>
   )
 }

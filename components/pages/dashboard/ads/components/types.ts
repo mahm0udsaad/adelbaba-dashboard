@@ -20,11 +20,10 @@ export interface Ad {
 
 export interface NewAdFormState {
   title: string
-  productId: string
   budget: string
   startDate: string
   endDate: string
   targetCountries: string
-  targetKeywords: string
+  targetKeywords: string[]
 }
 

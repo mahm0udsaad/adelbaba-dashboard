@@ -1,0 +1,419 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/api/v1/company/ads": {
+      "get": {
+        "summary": "List Ads",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "default = 15",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Ad",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": "{\n    // The type of advertisement: must be either \"banner\" or \"product\"\n    \"ad_type\": \"product\", // banner || product\n    \"ad\": {\n        \"title\": \"Summer Sale Banner\",\n\n        // Banner-specific\n        \"banner_type\": \"banner\", // banner || slideshow\n        \"banner_location\": \"header\", // header || footer\n        \"target_url\": \"https://example.com/sale\",\n\n        \"starts_at\": \"2025-10-01\", // must be today or later\n        \"ends_at\": \"2025-12-31\", // must be after starts_at\n\n        \"budget_type\": \"daily\", // daily || monthly\n        \"budget_amount\": 100.00,\n\n        // Array of at least 3 keywords to target\n        \"target_keywords\": [\n            \"summer\",\n            \"sale\",\n            \"discount\"\n        ],\n        // Product-specific: required if ad_type is \"product\"\n        \"product_id\": 1\n    },\n\n    // Array of image files for the banner (required if ad_type is \"banner\")\n    // Each file should be an image, max 5MB (5120 KB)\n    \"media\": [\n        /* file upload: banner1.jpg */ ,\n        /* file upload: banner2.png */\n    ]\n}"
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "ad": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "banner_type": {
+                          "type": "string"
+                        },
+                        "banner_location": {
+                          "type": "string"
+                        },
+                        "target_url": {
+                          "type": "string"
+                        },
+                        "starts_at": {
+                          "type": "string"
+                        },
+                        "ends_at": {
+                          "type": "string"
+                        },
+                        "budget_type": {
+                          "type": "string"
+                        },
+                        "budget_amount": {
+                          "type": "string"
+                        },
+                        "spent_amount": {
+                          "type": "string"
+                        },
+                        "target_keywords": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "target_id": {
+                          "type": "integer"
+                        },
+                        "target_type": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        },
+                        "ctr": {
+                          "type": "integer"
+                        },
+                        "daily_budget": {
+                          "type": "number"
+                        },
+                        "days_remaining": {
+                          "type": "number"
+                        },
+                        "is_active": {
+                          "type": "boolean"
+                        },
+                        "remaining_budget": {
+                          "type": "integer"
+                        },
+                        "clicks_count": {
+                          "type": "null"
+                        },
+                        "impressions_count": {
+                          "type": "null"
+                        },
+                        "media": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "status",
+                        "banner_type",
+                        "banner_location",
+                        "target_url",
+                        "starts_at",
+                        "ends_at",
+                        "budget_type",
+                        "budget_amount",
+                        "spent_amount",
+                        "target_keywords",
+                        "target_id",
+                        "target_type",
+                        "created_at",
+                        "updated_at",
+                        "ctr",
+                        "daily_budget",
+                        "days_remaining",
+                        "is_active",
+                        "remaining_budget",
+                        "clicks_count",
+                        "impressions_count",
+                        "media"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "ad"
+                  ]
+                },
+                "example": {
+                  "message": "Ad created successfully.",
+                  "ad": {
+                    "id": 55,
+                    "title": "Summer Sale Banner",
+                    "status": "pending",
+                    "banner_type": "banner",
+                    "banner_location": "header",
+                    "target_url": "https://example.com/sale",
+                    "starts_at": "2025-10-01T00:00:00.000000Z",
+                    "ends_at": "2025-12-31T00:00:00.000000Z",
+                    "budget_type": "daily",
+                    "budget_amount": "100.00",
+                    "spent_amount": "0.00",
+                    "target_keywords": [
+                      "summer",
+                      "sale",
+                      "discount"
+                    ],
+                    "target_id": 1,
+                    "target_type": "products",
+                    "created_at": "2025-09-29T14:11:09.000000Z",
+                    "updated_at": "2025-09-29T14:11:09.000000Z",
+                    "ctr": 0,
+                    "daily_budget": 3.33,
+                    "days_remaining": 1.7939814814814815e-9,
+                    "is_active": false,
+                    "remaining_budget": 100,
+                    "clicks_count": null,
+                    "impressions_count": null,
+                    "media": []
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/company/ads/39": {
+      "get": {
+        "summary": "Show Ad Details",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": " data;   final Links? links;   final Meta? meta;    AdsResponse({this.data, this.links, this.meta});    factory AdsResponse.fromJson(Map<String, dynamic> json) ",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": ">       _$AdsResponseFromJson(json);    Map<String, dynamic> toJson() => _$AdsResponseToJson(this); }  @JsonSerializable() class AdData {   final int? id;   final String? title;   final String? status;   @JsonKey(name: \"banner_type\")   final String? bannerType;   @JsonKey(name: \"banner_location\")   final String? bannerLocation;   @JsonKey(name: \"target_url\")   final String? targetUrl;   @JsonKey(name: \"starts_at\")   final String? startsAt;   @JsonKey(name: \"ends_at\")   final String? endsAt;   @JsonKey(name: \"budget_type\")   final String? budgetType;   @JsonKey(name: \"budget_amount\")   final String? budgetAmount;   @JsonKey(name: \"spent_amount\")   final String? spentAmount;   @JsonKey(name: \"target_keywords\")   final List<String>? targetKeywords;   @JsonKey(name: \"target_id\")   final int? targetId;   @JsonKey(name: \"target_type\")   final String? targetType;   @JsonKey(name: \"created_at\")   final String? createdAt;   @JsonKey(name: \"updated_at\")   final String? updatedAt;   final double? ctr;   @JsonKey(name: \"daily_budget\")   final double? dailyBudget;   @JsonKey(name: \"days_remaining\")   final double? daysRemaining;   @JsonKey(name: \"is_active\")   final bool? isActive;   @JsonKey(name: \"remaining_budget\")   final double? remainingBudget;   final int? clicks;   final int? impressions;   final List<Media>? media;    AdData({     this.id,     this.title,     this.status,     this.bannerType,     this.bannerLocation,     this.targetUrl,     this.startsAt,     this.endsAt,     this.budgetType,     this.budgetAmount,     this.spentAmount,     this.targetKeywords,     this.targetId,     this.targetType,     this.createdAt,     this.updatedAt,     this.ctr,     this.dailyBudget,     this.daysRemaining,     this.isActive,     this.remainingBudget,     this.clicks,     this.impressions,     this.media,   });    factory AdData.fromJson(Map<String, dynamic> json) => _$AdDataFromJson(json);   Map<String, dynamic> toJson() => _$AdDataToJson(this); }  @JsonSerializable() class Media {   final int? id;   @JsonKey(name: \"file_name\")   final String? fileName;   final String? size;   @JsonKey(name: \"human_readable_size\")   final String? humanReadableSize;   final String? url;   final String? type;    Media({     this.id,     this.fileName,     this.size,     this.humanReadableSize,     this.url,     this.type,   });    factory Media.fromJson(Map<String, dynamic> json) => _$MediaFromJson(json);   Map<String, dynamic> toJson() => _$MediaToJson(this); }  @JsonSerializable() class Links {   final String? first;   final String? last;   final String? prev;   final String? next;    Links({this.first, this.last, this.prev, this.next});    factory Links.fromJson(Map<String, dynamic> json) => _$LinksFromJson(json);   Map<String, dynamic> toJson() => _$LinksToJson(this); }  @JsonSerializable() class Meta {   @JsonKey(name: \"current_page\")   final int? currentPage;   final int? from;   @JsonKey(name: \"last_page\")   final int? lastPage;   final List<MetaLink>? links;   final String? path;   @JsonKey(name: \"per_page\")   final int? perPage;   final int? to;   final int? total;    Meta({     this.currentPage,     this.from,     this.lastPage,     this.links,     this.path,     this.perPage,     this.to,     this.total,   });    factory Meta.fromJson(Map<String, dynamic> json) => _$MetaFromJson(json);   Map<String, dynamic> toJson() => _$MetaToJson(this); }  @JsonSerializable() class MetaLink {   final String? url;   final String? label;   final bool? active;    MetaLink({this.url, this.label, this.active});    factory MetaLink.fromJson(Map<String, dynamic> json) =>       _$MetaLinkFromJson(json);   Map<String, dynamic> toJson() => _$MetaLinkToJson(this); }",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/company/ads/{id}": {
+      "delete": {
+        "summary": "Delete Pending Ad",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/company/ads/export": {
+      "post": {
+        "summary": "Export Ads",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": "{\n    \"date_from\": \"2025-02-01\",\n    \"date_to\": \"2025-12-30\",\n    // \"starts_at\": \"2025-12-30\", // Ad Start Date\n    // \"ends_at\": \"2025-02-30\", Ad End Date\n    // \"status\": \"active\", // pending || active || in_active || finished\n    \"format\": \"xlsx\" // csv || xlsx\n}"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/company/ads/{id}/export": {
+      "post": {
+        "summary": "Export Ad Reports",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "39",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": "{\n    \"date_from\": \"2025-02-01\",\n    \"date_to\": \"2025-12-30\",\n    \"format\": \"xlsx\" // csv || xlsx\n}"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}

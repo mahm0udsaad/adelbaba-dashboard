@@ -151,6 +151,41 @@ export interface TranslationKeys {
   conversions: string
   details: string
 
+  // Ads (Create UX)
+  clear: string
+  adsAdTypeLabel: string
+  adsProductAd: string
+  adsBannerAd: string
+  adsSearchProducts: string
+  adsNoProductsFound: string
+  adsNoProductsHint: string
+  adsSelected: string
+  adsBannerTypeLabel: string
+  adsBannerTypeBanner: string
+  adsBannerTypeSlideshow: string
+  adsBannerLocationLabel: string
+  adsLocationHeader: string
+  adsLocationFooter: string
+  adsTargetUrlLabel: string
+  adsMediaLabel: string
+  adsMediaHint: string
+  adsMaxImageSizeHint: string
+  adsMinKeywordsHint: string
+  adsLivePreview: string
+  adsSponsored: string
+  adsUploadToPreview: string
+  adsSelectProductToPreview: string
+  adsSchedule: string
+  adsBudgetLabel: string
+  adsKeywordsLabel: string
+  adsLocationLabel: string
+
+  // Shared UI / validation (used by Ads create page)
+  missingRequiredFields: string
+  uploadAtLeastOneImage: string
+  creating: string
+  invalidDateRange: string
+
   // Dashboard Root
   dashboardHeader: string
   dashboardOverview: string

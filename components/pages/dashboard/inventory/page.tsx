@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
@@ -21,7 +20,6 @@ import {
   listInventoryLevels,
   listInventoryHistory,
   listWarehouses,
-  operateInventory,
   listLowStock,
   createWarehouse,
   updateWarehouse,
@@ -55,18 +53,17 @@ import {
   ChevronRight
 } from "lucide-react"
 
-// Operation type labels and icons for better UX
-const operationConfig: Record<InventoryOperationType, { label: string; icon: typeof Package; color: string }> = {
-  receive: { label: "Receive Stock", icon: PackagePlus, color: "text-green-600 bg-green-50 border-green-200" },
-  ship: { label: "Ship Out", icon: PackageMinus, color: "text-blue-600 bg-blue-50 border-blue-200" },
-  reserve: { label: "Reserve", icon: Clock, color: "text-orange-600 bg-orange-50 border-orange-200" },
-  release_reservation: { label: "Release Reserved", icon: RotateCcw, color: "text-purple-600 bg-purple-50 border-purple-200" },
-  adjust: { label: "Adjust Stock", icon: RefreshCw, color: "text-gray-600 bg-gray-50 border-gray-200" },
-  count: { label: "Stock Count", icon: Boxes, color: "text-indigo-600 bg-indigo-50 border-indigo-200" },
-  return: { label: "Return", icon: RotateCcw, color: "text-teal-600 bg-teal-50 border-teal-200" },
-  damage: { label: "Damaged", icon: AlertCircle, color: "text-red-600 bg-red-50 border-red-200" },
-  loss: { label: "Loss", icon: AlertTriangle, color: "text-red-600 bg-red-50 border-red-200" },
-  transfer: { label: "Transfer", icon: ArrowRightLeft, color: "text-cyan-600 bg-cyan-50 border-cyan-200" },
+const operationVisuals: Record<InventoryOperationType, { icon: typeof Package; color: string; labelKey: string }> = {
+  receive: { icon: PackagePlus, color: "text-green-600 bg-green-50 border-green-200", labelKey: "inventoryOperationReceive" },
+  ship: { icon: PackageMinus, color: "text-blue-600 bg-blue-50 border-blue-200", labelKey: "inventoryOperationShip" },
+  reserve: { icon: Clock, color: "text-orange-600 bg-orange-50 border-orange-200", labelKey: "inventoryOperationReserve" },
+  release_reservation: { icon: RotateCcw, color: "text-purple-600 bg-purple-50 border-purple-200", labelKey: "inventoryOperationRelease" },
+  adjust: { icon: RefreshCw, color: "text-gray-600 bg-gray-50 border-gray-200", labelKey: "inventoryOperationAdjust" },
+  count: { icon: Boxes, color: "text-indigo-600 bg-indigo-50 border-indigo-200", labelKey: "inventoryOperationCount" },
+  return: { icon: RotateCcw, color: "text-teal-600 bg-teal-50 border-teal-200", labelKey: "inventoryOperationReturn" },
+  damage: { icon: AlertCircle, color: "text-red-600 bg-red-50 border-red-200", labelKey: "inventoryOperationDamage" },
+  loss: { icon: AlertTriangle, color: "text-red-600 bg-red-50 border-red-200", labelKey: "inventoryOperationLoss" },
+  transfer: { icon: ArrowRightLeft, color: "text-cyan-600 bg-cyan-50 border-cyan-200", labelKey: "inventoryOperationTransfer" },
 }
 
 // Warehouse form type
@@ -150,20 +147,22 @@ export default function InventoryPage() {
   const [warehouseSaving, setWarehouseSaving] = useState(false)
 
   // Operate sheet state
-  const [operateOpen, setOperateOpen] = useState(false)
-  const [operateForm, setOperateForm] = useState<{
-    sku_id?: number
-    product_name?: string
-    warehouse_id?: number
-    type: InventoryOperationType
-    quantity: number
-    notes?: string
-    to_warehouse_id?: number
-  }>({ type: "receive", quantity: 1 })
-  const [operating, setOperating] = useState(false)
+  const openOperatePage = (opType: InventoryOperationType = "receive") => {
+    router.push(`/dashboard/inventory/operate?type=${opType}`)
+  }
 
-  // Products for search (from levels)
-  const [allProducts, setAllProducts] = useState<Array<{ id: number; sku: string; name: string }>>([])
+  const operationConfig = useMemo(() => {
+    const getLabel = (key: string, fallback: string) => (t as any)?.[key] || fallback
+    return (Object.keys(operationVisuals) as InventoryOperationType[]).reduce((acc, type) => {
+      const v = operationVisuals[type]
+      acc[type] = {
+        icon: v.icon,
+        color: v.color,
+        label: getLabel(String(v.labelKey), type),
+      }
+      return acc
+    }, {} as Record<InventoryOperationType, { label: string; icon: typeof Package; color: string }>)
+  }, [t])
 
   // Initialize from URL params
   useEffect(() => {
@@ -282,36 +281,7 @@ export default function InventoryPage() {
     )
   }, [levels?.data, search])
 
-  // Open operate sheet with prefill
-  const handleOpenOperate = (prefill?: Partial<typeof operateForm>) => {
-    setOperateForm(prev => ({ ...prev, type: "receive", quantity: 1, notes: "", ...prefill }))
-    setOperateOpen(true)
-  }
-
-  // Submit inventory operation
-  const submitOperate = async () => {
-    if (!operateForm.sku_id || !operateForm.warehouse_id || !operateForm.quantity) return
-    try {
-      setOperating(true)
-      await operateInventory({
-        sku_id: operateForm.sku_id,
-        warehouse_id: operateForm.warehouse_id,
-        type: operateForm.type,
-        quantity: operateForm.quantity,
-        notes: operateForm.notes,
-        to_warehouse_id: operateForm.type === "transfer" ? operateForm.to_warehouse_id : undefined,
-      })
-      setOperateOpen(false)
-      // Refresh data
-      if (activeTab === "levels" || activeTab === "overview") fetchLevels()
-      if (activeTab === "low-stock" || activeTab === "overview") fetchLowStock()
-      if (activeTab === "movements") fetchHistory()
-    } catch (e) {
-      console.error("Operation failed:", e)
-    } finally {
-      setOperating(false)
-    }
-  }
+  // (Inventory operations moved to dedicated page: /dashboard/inventory/operate)
 
   // Warehouse CRUD handlers
   const handleEditWarehouse = (w: Warehouse) => {
@@ -422,17 +392,6 @@ export default function InventoryPage() {
     }
   }
 
-  // Product search for operate sheet
-  const [productSearch, setProductSearch] = useState("")
-  const filteredProducts = useMemo(() => {
-    if (!productSearch.trim()) return allProducts.slice(0, 10)
-    const q = productSearch.toLowerCase()
-    return allProducts.filter(p => 
-      p.name.toLowerCase().includes(q) || 
-      p.sku.toLowerCase().includes(q)
-    ).slice(0, 10)
-  }, [allProducts, productSearch])
-
   return (
     <div className="space-y-4 pb-20">
       {/* Header */}
@@ -527,7 +486,7 @@ export default function InventoryPage() {
                 <Button 
                   variant="outline" 
                   className="h-auto py-4 flex flex-col items-center gap-2 bg-green-50 border-green-200 hover:bg-green-100"
-                  onClick={() => handleOpenOperate({ type: "receive" })}
+                  onClick={() => openOperatePage("receive")}
                 >
                   <PackagePlus className="h-5 w-5 text-green-600" />
                   <span className="text-xs font-medium text-green-700">Receive Stock</span>
@@ -535,7 +494,7 @@ export default function InventoryPage() {
                 <Button 
                   variant="outline" 
                   className="h-auto py-4 flex flex-col items-center gap-2 bg-blue-50 border-blue-200 hover:bg-blue-100"
-                  onClick={() => handleOpenOperate({ type: "ship" })}
+                  onClick={() => openOperatePage("ship")}
                 >
                   <PackageMinus className="h-5 w-5 text-blue-600" />
                   <span className="text-xs font-medium text-blue-700">Ship Out</span>
@@ -543,7 +502,7 @@ export default function InventoryPage() {
                 <Button 
                   variant="outline" 
                   className="h-auto py-4 flex flex-col items-center gap-2 bg-cyan-50 border-cyan-200 hover:bg-cyan-100"
-                  onClick={() => handleOpenOperate({ type: "transfer" })}
+                  onClick={() => openOperatePage("transfer")}
                 >
                   <ArrowRightLeft className="h-5 w-5 text-cyan-600" />
                   <span className="text-xs font-medium text-cyan-700">Transfer</span>
@@ -551,7 +510,7 @@ export default function InventoryPage() {
                 <Button 
                   variant="outline" 
                   className="h-auto py-4 flex flex-col items-center gap-2 bg-indigo-50 border-indigo-200 hover:bg-indigo-100"
-                  onClick={() => handleOpenOperate({ type: "count" })}
+                  onClick={() => openOperatePage("count")}
                 >
                   <Boxes className="h-5 w-5 text-indigo-600" />
                   <span className="text-xs font-medium text-indigo-700">Stock Count</span>
@@ -589,13 +548,7 @@ export default function InventoryPage() {
                       <Button 
                         size="sm" 
                         className="ml-3"
-                        onClick={() => handleOpenOperate({ 
-                          sku_id: item.product?.id, 
-                          product_name: item.product?.name,
-                          warehouse_id: item.warehouse?.id, 
-                          type: "receive", 
-                          quantity: item.restock_quantity_needed 
-                        })}
+                        onClick={() => openOperatePage("receive")}
                       >
                         Restock
                       </Button>
@@ -664,7 +617,7 @@ export default function InventoryPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Inventory Levels</CardTitle>
-                <Button size="sm" onClick={() => handleOpenOperate()}>
+                <Button size="sm" onClick={() => openOperatePage("receive")}>
                   <Plus className="h-4 w-4 mr-1" /> New Operation
                 </Button>
               </div>
@@ -758,10 +711,7 @@ export default function InventoryPage() {
                             <Button 
                               size="sm" 
                               variant="outline"
-                              onClick={() => handleOpenOperate({ 
-                                sku_id: row.product?.id, 
-                                product_name: row.product?.name 
-                              })}
+                              onClick={() => openOperatePage("receive")}
                             >
                               Operate
                             </Button>
@@ -841,13 +791,7 @@ export default function InventoryPage() {
                                         <TableCell className="text-right">
                             <Button 
                               size="sm"
-                              onClick={() => handleOpenOperate({ 
-                                sku_id: row.product?.id, 
-                                product_name: row.product?.name,
-                                warehouse_id: row.warehouse?.id, 
-                                type: "receive", 
-                                quantity: row.restock_quantity_needed 
-                              })}
+                              onClick={() => openOperatePage("receive")}
                             >
                                                 Restock
                                             </Button>
@@ -1187,185 +1131,6 @@ export default function InventoryPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Inventory Operation Sheet */}
-      <Sheet open={operateOpen} onOpenChange={setOperateOpen}>
-        <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
-          <SheetHeader className="pb-4">
-            <SheetTitle>Inventory Operation</SheetTitle>
-            <SheetDescription>Record stock changes like receiving, shipping, or transfers</SheetDescription>
-          </SheetHeader>
-          
-          <div className="space-y-4">
-            {/* Product Selection */}
-            <div className="space-y-2">
-              <Label>Product *</Label>
-              {operateForm.product_name ? (
-                <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-                  <Package className="h-5 w-5 text-muted-foreground" />
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">{operateForm.product_name}</p>
-                    <p className="text-xs text-muted-foreground">ID: {operateForm.sku_id}</p>
-              </div>
-                  <Button size="sm" variant="ghost" onClick={() => setOperateForm(prev => ({ ...prev, sku_id: undefined, product_name: undefined }))}>
-                    Change
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search by product name or SKU..."
-                      value={productSearch}
-                      onChange={(e) => setProductSearch(e.target.value)}
-                      className="pl-9"
-                    />
-                  </div>
-                  {filteredProducts.length > 0 && (
-                    <div className="border rounded-lg divide-y max-h-40 overflow-y-auto">
-                      {filteredProducts.map((p) => (
-                        <button
-                          key={p.id}
-                          className="w-full p-3 text-left hover:bg-muted transition-colors"
-                          onClick={() => {
-                            setOperateForm(prev => ({ ...prev, sku_id: p.id, product_name: p.name }))
-                            setProductSearch("")
-                          }}
-                        >
-                          <p className="font-medium text-sm">{p.name}</p>
-                          <p className="text-xs text-muted-foreground font-mono">{p.sku}</p>
-                        </button>
-                      ))}
-              </div>
-                  )}
-            </div>
-              )}
-            </div>
-
-            {/* Warehouse Selection */}
-            <div className="space-y-2">
-              <Label>Warehouse *</Label>
-              <Select 
-                value={operateForm.warehouse_id ? String(operateForm.warehouse_id) : ""} 
-                onValueChange={(v) => setOperateForm(prev => ({ ...prev, warehouse_id: Number(v) }))}
-              >
-                    <SelectTrigger>
-                  <SelectValue placeholder="Select a warehouse" />
-                    </SelectTrigger>
-                    <SelectContent>
-                  {warehouses.map((w) => (
-                    <SelectItem key={w.id} value={String(w.id)}>
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
-                        {w.name}
-                      </div>
-                    </SelectItem>
-                    ))}
-                    </SelectContent>
-                </Select>
-              </div>
-
-            {/* Operation Type Selection */}
-            <div className="space-y-2">
-              <Label>Operation Type *</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {(Object.entries(operationConfig) as [InventoryOperationType, typeof operationConfig[InventoryOperationType]][]).map(([type, config]) => {
-                  const Icon = config.icon
-                  const isSelected = operateForm.type === type
-                  return (
-                    <button
-                      key={type}
-                      onClick={() => setOperateForm(prev => ({ ...prev, type }))}
-                      className={`p-3 rounded-lg border-2 transition-all text-left ${
-                        isSelected 
-                          ? 'border-primary bg-primary/5' 
-                          : 'border-transparent bg-muted hover:bg-muted/80'
-                      }`}
-                    >
-                      <Icon className={`h-5 w-5 mb-1 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <p className={`text-xs font-medium ${isSelected ? 'text-primary' : ''}`}>{config.label}</p>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Quantity */}
-            <div className="space-y-2">
-              <Label>Quantity *</Label>
-              <Input
-                type="number"
-                min={1}
-                value={operateForm.quantity}
-                onChange={(e) => setOperateForm(prev => ({ ...prev, quantity: Number(e.target.value) }))}
-                className="text-lg font-medium"
-              />
-            </div>
-
-            {/* Transfer destination */}
-            {operateForm.type === "transfer" && (
-              <div className="space-y-2">
-                <Label>Transfer To Warehouse *</Label>
-                <Select 
-                  value={operateForm.to_warehouse_id ? String(operateForm.to_warehouse_id) : ""} 
-                  onValueChange={(v) => setOperateForm(prev => ({ ...prev, to_warehouse_id: Number(v) }))}
-                >
-                    <SelectTrigger>
-                    <SelectValue placeholder="Select destination warehouse" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    {warehouses.filter(w => w.id !== operateForm.warehouse_id).map((w) => (
-                      <SelectItem key={w.id} value={String(w.id)}>
-                        <div className="flex items-center gap-2">
-                          <Building2 className="h-4 w-4 text-muted-foreground" />
-                          {w.name}
-                        </div>
-                      </SelectItem>
-                    ))}
-                    </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {/* Notes */}
-            <div className="space-y-2">
-              <Label>Notes (Optional)</Label>
-              <Input
-                placeholder="Add any notes about this operation..."
-                value={operateForm.notes || ""}
-                onChange={(e) => setOperateForm(prev => ({ ...prev, notes: e.target.value }))}
-              />
-            </div>
-
-            <Separator />
-
-            {/* Actions */}
-            <div className="flex gap-3 pb-4">
-              <Button 
-                className="flex-1" 
-                size="lg"
-                onClick={submitOperate} 
-                disabled={operating || !operateForm.sku_id || !operateForm.warehouse_id || !operateForm.quantity}
-              >
-                {operating ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
-                    Confirm Operation
-                  </>
-                )}
-              </Button>
-              <Button variant="outline" size="lg" onClick={() => setOperateOpen(false)}>
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   )
 }
