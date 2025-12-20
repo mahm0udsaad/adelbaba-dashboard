@@ -146,6 +146,8 @@ export interface TranslationKeys {
   adCreated: string
   adCreatedDesc: string
   failedToCreateAd: string
+  goToAds: string
+  createAnother: string
   impressions: string
   clicks: string
   conversions: string
@@ -167,6 +169,7 @@ export interface TranslationKeys {
   adsLocationHeader: string
   adsLocationFooter: string
   adsTargetUrlLabel: string
+  adsTargetUrlRequired: string
   adsMediaLabel: string
   adsMediaHint: string
   adsMaxImageSizeHint: string
@@ -181,6 +184,8 @@ export interface TranslationKeys {
   adsLocationLabel: string
 
   // Shared UI / validation (used by Ads create page)
+  uploadImages: string
+  remove: string
   missingRequiredFields: string
   uploadAtLeastOneImage: string
   creating: string
@@ -622,4 +627,32 @@ export interface TranslationKeys {
   rfqPriorityMedium: string
   rfqPriorityLow: string
   rfqMetricsError: string
+
+  // Disputes
+  disputes: string
+  disputesSubtitle: string
+  noDisputesFound: string
+  requestedAction: string
+  disputeDetails: string
+  platformDecision: string
+  underReview: string
+  withdrawn: string
+
+  // Company Profile
+  companyProfile: string
+  companyDescription: string
+  companyLogo: string
+  factoryImages: string
+  manageContacts: string
+  primaryContact: string
+  addContact: string
+  phone: string
+  email: string
+  isPrimary: string
+  uploadLogo: string
+  uploadFactoryImages: string
+  companyUpdated: string
+  failedToUpdateCompany: string
+  factoryImagesUpdated: string
+  failedToUpdateFactory: string
 }

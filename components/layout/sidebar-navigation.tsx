@@ -21,13 +21,17 @@ import {
   DollarSign,
   Wallet,
   Truck,
+  AlertOctagon,
+  Building2,
 } from "lucide-react"
 
 const sidebarItems = [
   { icon: LayoutDashboard, key: "dashboard" as const, href: "/dashboard" },
+  { icon: Building2, key: "companyProfile" as const, href: "/dashboard/company" },
   { icon: FileText, key: "rfqs" as const, href: "/dashboard/rfq" },
   { icon: DollarSign, key: "quotes" as const, href: "/dashboard/quotes" },
   { icon: ShoppingCart, key: "orders" as const, href: "/dashboard/orders" },
+  { icon: AlertOctagon, key: "disputes" as const, href: "/dashboard/disputes" },
   { icon: Package, key: "products" as const, href: "/dashboard/products" },
   { icon: Boxes, key: "inventory" as const, href: "/dashboard/inventory" },
   { icon: Crown, key: "membership" as const, href: "/dashboard/membership" },

@@ -1,160 +1,98 @@
 import apiClient from "@/lib/axios"
-import { Company } from "@/src/contexts/auth-context"
 
-export interface CompanyUpdateData {
-  name?: string
-  description?: string
-  founded_year?: number
-  location?: string
+export interface CompanyContact {
+  id?: string | number
+  phone: string
+  email: string
+  is_primary: boolean | number
+}
+
+export interface CompanyUpdatePayload {
   logo?: File
-  remove_logo?: boolean // Flag to indicate logo should be removed
-  contacts?: Array<{
-    phone?: string
-    email?: string
-    is_primary?: number
-  }>
+  description?: string
+  contacts: CompanyContact[]
 }
 
-export interface CompanyApiResponse {
-  data: Company
-  message?: string
+// Alias for backward compatibility with existing hooks
+export type CompanyUpdateData = CompanyUpdatePayload
+
+export interface FactoryImage {
+  id: number
+  file_name: string
+  size: string
+  human_readable_size: string
+  url: string
+  type: string
 }
 
-export class CompanyApiService {
-  /**
-   * Fetch company data from the backend
-   */
-  static async getCompany(): Promise<Company> {
-    try {
-      const response = await apiClient.get<CompanyApiResponse>("/v1/company")
-      return response.data.data
-    } catch (error: any) {
-      console.error("Failed to fetch company data:", error)
-      throw new Error(error.response?.data?.message || error.message || "Failed to fetch company data")
-    }
-  }
-
-  /**
-   * Update company data
-   */
-  static async updateCompany(data: CompanyUpdateData): Promise<Company> {
-    try {
-      const formData = new FormData()
-      
-      // Add method override for PUT request
-      formData.append("_method", "PUT")
-      
-      // Add basic company information
-      if (data.name) {
-        formData.append("name", data.name)
-      }
-      if (data.description) {
-        formData.append("description", data.description)
-      }
-      if (data.founded_year) {
-        formData.append("founded_year", data.founded_year.toString())
-      }
-      if (data.location) {
-        formData.append("location", data.location)
-      }
-      
-      // Add logo if provided
-      if (data.logo) {
-        formData.append("logo", data.logo)
-      }
-      
-      // Add logo removal flag if needed
-      if (data.remove_logo) {
-        formData.append("remove_logo", "1")
-      }
-      
-      // Add contacts
-      if (data.contacts) {
-        data.contacts.forEach((contact, index) => {
-          if (contact.phone) {
-            formData.append(`contacts[${index}][phone]`, contact.phone)
-          }
-          if (contact.email) {
-            formData.append(`contacts[${index}][email]`, contact.email)
-          }
-          if (contact.is_primary !== undefined) {
-            formData.append(`contacts[${index}][is_primary]`, contact.is_primary.toString())
-          }
-        })
-      }
-
-      const response = await apiClient.post<CompanyApiResponse>(
-        "/v1/company/update", 
-        formData, 
-        { 
-          headers: { 
-            "Content-Type": "multipart/form-data" 
-          } 
-        }
-      )
-      
-      return response.data.data
-    } catch (error: any) {
-      console.error("Failed to update company data:", error)
-      throw new Error(error.response?.data?.message || error.message || "Failed to update company data")
-    }
-  }
-
-  /**
-   * Check if company exists and is active
-   */
-  static async checkCompanyStatus(): Promise<{ exists: boolean; isActive: boolean }> {
-    try {
-      const company = await this.getCompany()
-      return {
-        exists: !!company,
-        isActive: company?.is_active || false
-      }
-    } catch (error) {
-      return {
-        exists: false,
-        isActive: false
-      }
-    }
-  }
-
-  /**
-   * Get company completion status
-   */
-  static async getCompletionStatus(): Promise<{
-    profile_completed: boolean
-    warehouse_setup?: boolean
-    certificates_uploaded: boolean
-    first_product_added: boolean
-    shipping_configured?: boolean // Deprecated - kept for backward compatibility
-  }> {
-    try {
-      const company = await this.getCompany()
-      
-      // Determine completion status based on company data
-      return {
-        profile_completed: !!(company?.name && company?.description && company?.contacts?.length),
-        warehouse_setup: false, // This would need to be determined based on warehouse setup
-        certificates_uploaded: false, // This would need to be determined based on uploaded certificates
-        first_product_added: false, // This would need to be determined based on products
-        shipping_configured: false, // Kept for backward compatibility
-      }
-    } catch (error) {
-      return {
-        profile_completed: false,
-        warehouse_setup: false,
-        certificates_uploaded: false,
-        first_product_added: false,
-        shipping_configured: false,
-      }
-    }
-  }
+export interface FactoryImagesResponse {
+  data: FactoryImage[]
 }
 
-// Export convenience functions
+const BASE_URL = "/v1/company"
+
 export const companyApi = {
-  get: CompanyApiService.getCompany,
-  update: CompanyApiService.updateCompany,
-  checkStatus: CompanyApiService.checkCompanyStatus,
-  getCompletionStatus: CompanyApiService.getCompletionStatus,
+  async getCompany(): Promise<any> {
+    const res = await apiClient.get(BASE_URL)
+    return res.data?.data || res.data
+  },
+
+  async updateProfile(payload: CompanyUpdatePayload): Promise<{ message: string }> {
+    const fd = new FormData()
+    fd.append("_method", "PUT")
+    
+    if (payload.logo) {
+      fd.append("logo", payload.logo)
+    }
+    
+    if (payload.description) {
+      fd.append("description", payload.description)
+    }
+    
+    payload.contacts.forEach((contact, idx) => {
+      if (contact.id) fd.append(`contacts[${idx}][id]`, String(contact.id))
+      fd.append(`contacts[${idx}][phone]`, contact.phone)
+      fd.append(`contacts[${idx}][email]`, contact.email)
+      fd.append(`contacts[${idx}][is_primary]`, contact.is_primary ? "1" : "0")
+    })
+
+    const res = await apiClient.post(`${BASE_URL}/update`, fd, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    return res.data
+  },
+
+  // Alias for backward compatibility
+  async updateCompany(data: CompanyUpdateData): Promise<any> {
+    await this.updateProfile(data)
+    return this.getCompany()
+  },
+
+  async getFactoryImages(): Promise<FactoryImagesResponse> {
+    const res = await apiClient.get(`${BASE_URL}/factory`)
+    return res.data
+  },
+
+  async updateFactoryImages(payload: { 
+    add?: File[], 
+    remove?: (string | number)[] 
+  }): Promise<{ message: string }> {
+    const fd = new FormData()
+    
+    if (payload.add && payload.add.length > 0) {
+      payload.add.forEach((file) => fd.append("media[add][]", file))
+    }
+    
+    if (payload.remove && payload.remove.length > 0) {
+      payload.remove.forEach((id) => fd.append("media[remove][]", String(id)))
+    }
+
+    const res = await apiClient.post(`${BASE_URL}/factory`, fd, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    return res.data
+  }
 }
+
+// Export as CompanyApiService for backward compatibility with use-company hook
+export const CompanyApiService = companyApi

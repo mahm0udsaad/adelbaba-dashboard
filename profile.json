@@ -1,0 +1,399 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/api/v1/company/update": {
+      "post": {
+        "summary": "Edit Company Profile",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "_method": {
+                    "example": "PUT",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "format": "binary",
+                    "type": "string",
+                    "example": "file://C:\\Users\\Bodda\\OneDrive\\Desktop\\2019_8_10_8_50_46_809.jpg"
+                  },
+                  "description": {
+                    "example": "New Description",
+                    "type": "string"
+                  },
+                  "contacts[0][id]": {
+                    "description": "to update a specific contact pass the id, if you want to create a new one don't pass the id",
+                    "example": "11",
+                    "type": "string"
+                  },
+                  "contacts[0][phone]": {
+                    "type": "string",
+                    "example": "68655552213"
+                  },
+                  "contacts[0][email]": {
+                    "example": "abdos309@gmail.com",
+                    "type": "string"
+                  },
+                  "contacts[0][is_primary]": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "contacts[1][phone]": {
+                    "example": "4586321001",
+                    "type": "string"
+                  },
+                  "contacts[1][email]": {
+                    "type": "string",
+                    "example": "abdos11066@gmail.com"
+                  }
+                },
+                "required": [
+                  "logo"
+                ]
+              },
+              "examples": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "example": {
+                  "message": "Company updated successfully."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "message": "You have to register a company first."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "example": {
+                  "message": "Failed to update company."
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/company/factory": {
+      "get": {
+        "summary": "List Factory Images",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "examples": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "file_name": {
+                            "type": "string"
+                          },
+                          "size": {
+                            "type": "string"
+                          },
+                          "human_readable_size": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "file_name",
+                          "size",
+                          "human_readable_size",
+                          "url",
+                          "type"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": 1874,
+                      "file_name": "498205974_1108027954692871_7248669807573205471_n.jpg",
+                      "size": "image/jpeg",
+                      "human_readable_size": "40.89 KB",
+                      "url": "https://adilbaba.test/storage/1874/498205974_1108027954692871_7248669807573205471_n.jpg",
+                      "type": "image"
+                    },
+                    {
+                      "id": 1875,
+                      "file_name": "499712061_2430635967310455_5263708950995414591_n.jpg",
+                      "size": "image/jpeg",
+                      "human_readable_size": "6.47 KB",
+                      "url": "https://adilbaba.test/storage/1875/499712061_2430635967310455_5263708950995414591_n.jpg",
+                      "type": "image"
+                    },
+                    {
+                      "id": 1876,
+                      "file_name": "499917975_10161841770032839_6781769260546666968_n.jpg",
+                      "size": "image/jpeg",
+                      "human_readable_size": "167.67 KB",
+                      "url": "https://adilbaba.test/storage/1876/499917975_10161841770032839_6781769260546666968_n.jpg",
+                      "type": "image"
+                    },
+                    {
+                      "id": 1877,
+                      "file_name": "500226616_122104644938874413_4257923888398449160_n.jpg",
+                      "size": "image/jpeg",
+                      "human_readable_size": "50.97 KB",
+                      "url": "https://adilbaba.test/storage/1877/500226616_122104644938874413_4257923888398449160_n.jpg",
+                      "type": "image"
+                    },
+                    {
+                      "id": 1878,
+                      "file_name": "500248890_122164745468461777_264803281327777088_n.jpg",
+                      "size": "image/jpeg",
+                      "human_readable_size": "7.84 KB",
+                      "url": "https://adilbaba.test/storage/1878/500248890_122164745468461777_264803281327777088_n.jpg",
+                      "type": "image"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "message": "You have to register a company first."
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Upload Factory Images",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "media[remove][]": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "To remove images by id",
+                    "example": [
+                      "1874",
+                      "1875"
+                    ]
+                  },
+                  "media[add][]": {
+                    "format": "binary",
+                    "type": "string",
+                    "description": "To add images",
+                    "example": [
+                      "file://C:\\Users\\Bodda\\OneDrive\\Desktop\\498205974_1108027954692871_7248669807573205471_n.jpg",
+                      "file://C:\\Users\\Bodda\\OneDrive\\Desktop\\499712061_2430635967310455_5263708950995414591_n.jpg",
+                      "file://C:\\Users\\Bodda\\OneDrive\\Desktop\\499917975_10161841770032839_6781769260546666968_n.jpg",
+                      "file://C:\\Users\\Bodda\\OneDrive\\Desktop\\500226616_122104644938874413_4257923888398449160_n.jpg",
+                      "file://C:\\Users\\Bodda\\OneDrive\\Desktop\\500248890_122164745468461777_264803281327777088_n.jpg"
+                    ]
+                  }
+                }
+              },
+              "examples": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "example": {
+                  "message": "Factory images updated successfully."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "message": "You have to register a company first."
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "example": {
+                  "message": "Failed to update factory images."
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}

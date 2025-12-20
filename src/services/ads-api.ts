@@ -92,15 +92,16 @@ export async function createAd(payload: CreateAdPayload): Promise<{ message: str
   fd.set("ad[ends_at]", payload.ad.ends_at)
   fd.set("ad[budget_type]", payload.ad.budget_type)
   fd.set("ad[budget_amount]", String(payload.ad.budget_amount))
-  payload.ad.target_keywords.forEach((kw, idx) => fd.append(`ad[target_keywords][${idx}]`, kw))
+  // Use [] array syntax for widest backend compatibility
+  payload.ad.target_keywords.forEach((kw) => fd.append("ad[target_keywords][]", kw))
 
   payload.media?.forEach((file) => fd.append("media[]", file))
 
   const res = await apiClient.post(BASE_URL, fd, {
     headers: { "Content-Type": "multipart/form-data" },
     timeout: 120000,
-    maxBodyLength: Infinity as any,
-    maxContentLength: Infinity as any,
+    maxBodyLength: Infinity,
+    maxContentLength: Infinity,
   })
   return res.data
 }

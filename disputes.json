@@ -1,0 +1,931 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/api/v1/company/disputes": {
+      "get": {
+        "summary": "List Disputes",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "default = 15",
+            "required": false,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "open || under_review || resolved || closed",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "chat_inbox_id": {
+                            "type": "integer"
+                          },
+                          "reason": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "requested_action": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "resolved_at": {
+                            "type": "null"
+                          },
+                          "platform_decision": {
+                            "type": "null"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          },
+                          "order": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "order_number": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              },
+                              "subtotal": {
+                                "type": "string"
+                              },
+                              "shipping": {
+                                "type": "string"
+                              },
+                              "tax": {
+                                "type": "string"
+                              },
+                              "total": {
+                                "type": "string"
+                              },
+                              "shipment_status": {
+                                "type": "string"
+                              },
+                              "payment_status": {
+                                "type": "string"
+                              },
+                              "is_confirmed": {
+                                "type": "boolean"
+                              },
+                              "customer": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "email"
+                                ]
+                              },
+                              "shipment": {
+                                "type": "object",
+                                "properties": {
+                                  "tracking_number": {
+                                    "type": "string"
+                                  },
+                                  "status": {
+                                    "type": "string"
+                                  },
+                                  "notes": {
+                                    "type": "string"
+                                  },
+                                  "shipping_company": {
+                                    "type": "string"
+                                  },
+                                  "address": {
+                                    "type": "object",
+                                    "properties": {
+                                      "address": {
+                                        "type": "string"
+                                      },
+                                      "address_type": {
+                                        "type": "string"
+                                      },
+                                      "region": {
+                                        "type": "string"
+                                      },
+                                      "state": {
+                                        "type": "string"
+                                      },
+                                      "city": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "address",
+                                      "address_type",
+                                      "region",
+                                      "state",
+                                      "city"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "tracking_number",
+                                  "status",
+                                  "notes",
+                                  "shipping_company",
+                                  "address"
+                                ]
+                              },
+                              "payment": {
+                                "type": "object",
+                                "properties": {
+                                  "payment_number": {
+                                    "type": "string"
+                                  },
+                                  "amount": {
+                                    "type": "string"
+                                  },
+                                  "status": {
+                                    "type": "string"
+                                  },
+                                  "method": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "payment_number",
+                                  "amount",
+                                  "status",
+                                  "method"
+                                ]
+                              },
+                              "items_count": {
+                                "type": "null"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "order_number",
+                              "created_at",
+                              "updated_at",
+                              "subtotal",
+                              "shipping",
+                              "tax",
+                              "total",
+                              "shipment_status",
+                              "payment_status",
+                              "is_confirmed",
+                              "customer",
+                              "shipment",
+                              "payment",
+                              "items_count"
+                            ]
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "picture": {
+                                "type": "string"
+                              },
+                              "email": {
+                                "type": "string"
+                              },
+                              "phone": {
+                                "type": "string"
+                              },
+                              "has_company": {
+                                "type": "boolean"
+                              },
+                              "unread_notifications_count": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "picture",
+                              "email",
+                              "phone",
+                              "has_company",
+                              "unread_notifications_count"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "chat_inbox_id",
+                          "reason",
+                          "description",
+                          "requested_action",
+                          "status",
+                          "resolved_at",
+                          "platform_decision",
+                          "created_at",
+                          "updated_at",
+                          "order",
+                          "user"
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": "string"
+                        },
+                        "last": {
+                          "type": "string"
+                        },
+                        "prev": {
+                          "type": "null"
+                        },
+                        "next": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer"
+                        },
+                        "from": {
+                          "type": "integer"
+                        },
+                        "last_page": {
+                          "type": "integer"
+                        },
+                        "links": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": "string"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        },
+                        "to": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": 2,
+                      "chat_inbox_id": 12,
+                      "reason": "Not the specified product",
+                      "description": "long text here maybe html or markdown",
+                      "requested_action": "refund",
+                      "status": "open",
+                      "resolved_at": null,
+                      "platform_decision": null,
+                      "created_at": "2025-10-15T21:27:19.000000Z",
+                      "updated_at": "2025-10-15T21:27:19.000000Z",
+                      "order": {
+                        "id": 1,
+                        "order_number": "ORD-PAWZBMP2OH",
+                        "created_at": "2025-10-15T21:22:50.000000Z",
+                        "updated_at": "2025-10-15T21:22:51.000000Z",
+                        "subtotal": "264.39",
+                        "shipping": "0.80",
+                        "tax": "71.62",
+                        "total": "3512.00",
+                        "shipment_status": "delivered",
+                        "payment_status": "completed",
+                        "is_confirmed": true,
+                        "customer": {
+                          "id": 1,
+                          "name": "Test User",
+                          "email": "test@example.com"
+                        },
+                        "shipment": {
+                          "tracking_number": "2992998942",
+                          "status": "delivered",
+                          "notes": "Corrupti minus maiores sed.",
+                          "shipping_company": "Cremin, Hackett and Rath",
+                          "address": {
+                            "address": "1376 Pacocha Way\nEvemouth, MN 14896",
+                            "address_type": "warehouse",
+                            "region": "Switzerland",
+                            "state": "Derrick Casper",
+                            "city": "Jaylin Miller I"
+                          }
+                        },
+                        "payment": {
+                          "payment_number": "PAY-4783-azhz",
+                          "amount": "3512.00",
+                          "status": "completed",
+                          "method": "paymob"
+                        },
+                        "items_count": null
+                      },
+                      "user": {
+                        "id": 1,
+                        "name": "Test User",
+                        "picture": "https://placehold.co/200/png?text=No+Image",
+                        "email": "test@example.com",
+                        "phone": "956.838.7555",
+                        "has_company": true,
+                        "unread_notifications_count": 0
+                      }
+                    },
+                    {
+                      "id": 1,
+                      "chat_inbox_id": 11,
+                      "reason": "Not the specified product",
+                      "description": "long text here maybe html or markdown",
+                      "requested_action": "refund",
+                      "status": "withdrawn",
+                      "resolved_at": null,
+                      "platform_decision": null,
+                      "created_at": "2025-10-15T21:25:58.000000Z",
+                      "updated_at": "2025-10-16T07:20:25.000000Z",
+                      "order": {
+                        "id": 1,
+                        "order_number": "ORD-PAWZBMP2OH",
+                        "created_at": "2025-10-15T21:22:50.000000Z",
+                        "updated_at": "2025-10-15T21:22:51.000000Z",
+                        "subtotal": "264.39",
+                        "shipping": "0.80",
+                        "tax": "71.62",
+                        "total": "3512.00",
+                        "shipment_status": "delivered",
+                        "payment_status": "completed",
+                        "is_confirmed": true,
+                        "customer": {
+                          "id": 1,
+                          "name": "Test User",
+                          "email": "test@example.com"
+                        },
+                        "shipment": {
+                          "tracking_number": "2992998942",
+                          "status": "delivered",
+                          "notes": "Corrupti minus maiores sed.",
+                          "shipping_company": "Cremin, Hackett and Rath",
+                          "address": {
+                            "address": "1376 Pacocha Way\nEvemouth, MN 14896",
+                            "address_type": "warehouse",
+                            "region": "Switzerland",
+                            "state": "Derrick Casper",
+                            "city": "Jaylin Miller I"
+                          }
+                        },
+                        "payment": {
+                          "payment_number": "PAY-4783-azhz",
+                          "amount": "3512.00",
+                          "status": "completed",
+                          "method": "paymob"
+                        },
+                        "items_count": null
+                      },
+                      "user": {
+                        "id": 1,
+                        "name": "Test User",
+                        "picture": "https://placehold.co/200/png?text=No+Image",
+                        "email": "test@example.com",
+                        "phone": "956.838.7555",
+                        "has_company": true,
+                        "unread_notifications_count": 0
+                      }
+                    }
+                  ],
+                  "links": {
+                    "first": "https://adilbaba.test/api/v1/company/disputes?page=1",
+                    "last": "https://adilbaba.test/api/v1/company/disputes?page=1",
+                    "prev": null,
+                    "next": null
+                  },
+                  "meta": {
+                    "current_page": 1,
+                    "from": 1,
+                    "last_page": 1,
+                    "links": [
+                      {
+                        "url": null,
+                        "label": "&laquo; Previous",
+                        "active": false
+                      },
+                      {
+                        "url": "https://adilbaba.test/api/v1/company/disputes?page=1",
+                        "label": "1",
+                        "active": true
+                      },
+                      {
+                        "url": null,
+                        "label": "Next &raquo;",
+                        "active": false
+                      }
+                    ],
+                    "path": "https://adilbaba.test/api/v1/company/disputes",
+                    "per_page": 15,
+                    "to": 2,
+                    "total": 2
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/company/disputes/{id}": {
+      "get": {
+        "summary": "Show Dispute Details",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "chat_inbox_id": {
+                          "type": "integer"
+                        },
+                        "reason": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "requested_action": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "resolved_at": {
+                          "type": "null"
+                        },
+                        "platform_decision": {
+                          "type": "null"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        },
+                        "order": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "order_number": {
+                              "type": "string"
+                            },
+                            "created_at": {
+                              "type": "string"
+                            },
+                            "updated_at": {
+                              "type": "string"
+                            },
+                            "subtotal": {
+                              "type": "string"
+                            },
+                            "shipping": {
+                              "type": "string"
+                            },
+                            "tax": {
+                              "type": "string"
+                            },
+                            "total": {
+                              "type": "string"
+                            },
+                            "shipment_status": {
+                              "type": "string"
+                            },
+                            "payment_status": {
+                              "type": "string"
+                            },
+                            "is_confirmed": {
+                              "type": "boolean"
+                            },
+                            "customer": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "name",
+                                "email"
+                              ]
+                            },
+                            "shipment": {
+                              "type": "object",
+                              "properties": {
+                                "tracking_number": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "notes": {
+                                  "type": "string"
+                                },
+                                "shipping_company": {
+                                  "type": "string"
+                                },
+                                "address": {
+                                  "type": "object",
+                                  "properties": {
+                                    "address": {
+                                      "type": "string"
+                                    },
+                                    "address_type": {
+                                      "type": "string"
+                                    },
+                                    "region": {
+                                      "type": "string"
+                                    },
+                                    "state": {
+                                      "type": "string"
+                                    },
+                                    "city": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "address",
+                                    "address_type",
+                                    "region",
+                                    "state",
+                                    "city"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "tracking_number",
+                                "status",
+                                "notes",
+                                "shipping_company",
+                                "address"
+                              ]
+                            },
+                            "payment": {
+                              "type": "object",
+                              "properties": {
+                                "payment_number": {
+                                  "type": "string"
+                                },
+                                "amount": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "method": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "payment_number",
+                                "amount",
+                                "status",
+                                "method"
+                              ]
+                            },
+                            "items_count": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "order_number",
+                            "created_at",
+                            "updated_at",
+                            "subtotal",
+                            "shipping",
+                            "tax",
+                            "total",
+                            "shipment_status",
+                            "payment_status",
+                            "is_confirmed",
+                            "customer",
+                            "shipment",
+                            "payment",
+                            "items_count"
+                          ]
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "picture": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string"
+                            },
+                            "has_company": {
+                              "type": "boolean"
+                            },
+                            "unread_notifications_count": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "picture",
+                            "email",
+                            "phone",
+                            "has_company",
+                            "unread_notifications_count"
+                          ]
+                        },
+                        "evidence": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "file_name": {
+                                "type": "string"
+                              },
+                              "size": {
+                                "type": "string"
+                              },
+                              "human_readable_size": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "chat_inbox_id",
+                        "reason",
+                        "description",
+                        "requested_action",
+                        "status",
+                        "resolved_at",
+                        "platform_decision",
+                        "created_at",
+                        "updated_at",
+                        "order",
+                        "user",
+                        "evidence"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": {
+                    "id": 1,
+                    "chat_inbox_id": 11,
+                    "reason": "Not the specified product",
+                    "description": "long text here maybe html or markdown",
+                    "requested_action": "refund",
+                    "status": "withdrawn",
+                    "resolved_at": null,
+                    "platform_decision": null,
+                    "created_at": "2025-10-15T21:25:58.000000Z",
+                    "updated_at": "2025-10-16T07:20:25.000000Z",
+                    "order": {
+                      "id": 1,
+                      "order_number": "ORD-PAWZBMP2OH",
+                      "created_at": "2025-10-15T21:22:50.000000Z",
+                      "updated_at": "2025-10-15T21:22:51.000000Z",
+                      "subtotal": "264.39",
+                      "shipping": "0.80",
+                      "tax": "71.62",
+                      "total": "3512.00",
+                      "shipment_status": "delivered",
+                      "payment_status": "completed",
+                      "is_confirmed": true,
+                      "customer": {
+                        "id": 1,
+                        "name": "Test User",
+                        "email": "test@example.com"
+                      },
+                      "shipment": {
+                        "tracking_number": "2992998942",
+                        "status": "delivered",
+                        "notes": "Corrupti minus maiores sed.",
+                        "shipping_company": "Cremin, Hackett and Rath",
+                        "address": {
+                          "address": "1376 Pacocha Way\nEvemouth, MN 14896",
+                          "address_type": "warehouse",
+                          "region": "Switzerland",
+                          "state": "Derrick Casper",
+                          "city": "Jaylin Miller I"
+                        }
+                      },
+                      "payment": {
+                        "payment_number": "PAY-4783-azhz",
+                        "amount": "3512.00",
+                        "status": "completed",
+                        "method": "paymob"
+                      },
+                      "items_count": null
+                    },
+                    "user": {
+                      "id": 1,
+                      "name": "Test User",
+                      "picture": "https://placehold.co/200/png?text=No+Image",
+                      "email": "test@example.com",
+                      "phone": "956.838.7555",
+                      "has_company": true,
+                      "unread_notifications_count": 0
+                    },
+                    "evidence": [
+                      {
+                        "id": 1547,
+                        "file_name": "Backend-Tasks-(crm,-Erp,-Ads).pdf",
+                        "size": "application/pdf",
+                        "human_readable_size": "21.8 KB",
+                        "url": "https://adilbaba.test/storage/1547/Backend-Tasks-(crm,-Erp,-Ads).pdf",
+                        "type": "pdf"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}
