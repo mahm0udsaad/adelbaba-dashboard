@@ -251,6 +251,65 @@ export interface TranslationKeys {
   noToolsFound: string
   tryChangingFilters: string
 
+  // Marketing - Email Campaign
+  marketingEmailCampaignTitle: string
+  marketingEmailCampaignSubtitle: string
+  marketingEmailCampaignEmailsOnlyBadge: string
+  marketingEmailCampaignRecipientsTab: string
+  marketingEmailCampaignDesignTab: string
+  marketingEmailCampaignChooseCustomersTitle: string
+  marketingEmailCampaignSearchPlaceholder: string
+  marketingEmailCampaignAllFilter: string
+  marketingEmailCampaignShowingCounts: string
+  marketingEmailCampaignSelectAll: string
+  marketingEmailCampaignUnselectAll: string
+  marketingEmailCampaignNoContactsMatch: string
+  marketingEmailCampaignContinueToDesign: string
+  marketingEmailCampaignContentTitle: string
+  marketingEmailCampaignNameLabel: string
+  marketingEmailCampaignSubjectLabel: string
+  marketingEmailCampaignSubjectPlaceholder: string
+  marketingEmailCampaignPreheaderLabel: string
+  marketingEmailCampaignPreheaderPlaceholder: string
+  marketingEmailCampaignHeadlineLabel: string
+  marketingEmailCampaignMessageLabel: string
+  marketingEmailCampaignMessagePlaceholder: string
+  marketingEmailCampaignCtaTextLabel: string
+  marketingEmailCampaignCtaLinkLabel: string
+  marketingEmailCampaignBrandColorLabel: string
+  marketingEmailCampaignBackgroundLabel: string
+  marketingEmailCampaignIncludeLogoTitle: string
+  marketingEmailCampaignIncludeLogoSubtitle: string
+  marketingEmailCampaignLogoUrlLabel: string
+  marketingEmailCampaignLogoUrlTip: string
+  marketingEmailCampaignFooterNoteLabel: string
+  marketingEmailCampaignRecipientsInline: string
+  marketingEmailCampaignResetEmailButton: string
+  marketingEmailCampaignSendButton: string
+  marketingEmailCampaignRequiredHint: string
+  marketingEmailCampaignLivePreviewTitle: string
+  marketingEmailCampaignLivePreviewSubtitle: string
+  marketingEmailCampaignEmailBadge: string
+  marketingEmailCampaignLogoAlt: string
+
+  marketingEmailCampaignDefaultName: string
+  marketingEmailCampaignDefaultFromName: string
+  marketingEmailCampaignDefaultHeadline: string
+  marketingEmailCampaignDefaultMessage: string
+  marketingEmailCampaignDefaultCtaText: string
+  marketingEmailCampaignDefaultFooterNote: string
+
+  marketingEmailCampaignMissingRequiredTitle: string
+  marketingEmailCampaignMissingRequiredDescription: string
+  marketingEmailCampaignSendingTitle: string
+  marketingEmailCampaignRecipientsToast: string
+  marketingEmailCampaignSentTitle: string
+  marketingEmailCampaignSentToast: string
+  marketingEmailCampaignSendFailedTitle: string
+  marketingEmailCampaignSendFailedFallbackDescription: string
+  marketingEmailCampaignDraftResetTitle: string
+  marketingEmailCampaignDraftResetDescription: string
+
   // Certificates
   certificatesHeader: string
   manageCertificates: string

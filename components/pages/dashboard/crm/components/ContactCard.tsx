@@ -8,6 +8,7 @@ import { Mail, Phone, MapPin, Calendar, ShoppingCart, DollarSign, MoreHorizontal
 import type { CRMContactItem } from "@/src/services/crm-api"
 import { formatDate } from "./types"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 export function ContactCard({ contact }: { contact: CRMContactItem }) {
   const { t, isArabic } = useI18n()
@@ -59,7 +60,7 @@ export function ContactCard({ contact }: { contact: CRMContactItem }) {
               </div>
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <span className="font-medium">${Number(contact.total_spent).toLocaleString()}</span>
+                <span className="font-medium">${toEnglishLocaleString(contact.total_spent)}</span>
                 <span className="text-sm text-muted-foreground">{t.revenue}</span>
               </div>
               <div className="flex items-center gap-2">

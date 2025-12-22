@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import type { ProductListItem } from "@/src/services/types/product-types"
-import { cn } from "@/lib/utils"
+import { cn, formatCurrency } from "@/lib/utils"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 type AdLivePreviewProps = {
@@ -39,7 +39,7 @@ type AdLivePreviewProps = {
 
 function formatMoney(n: number) {
   if (!Number.isFinite(n)) return ""
-  return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(n)
+  return formatCurrency(n, "USD", { maximumFractionDigits: 2 })
 }
 
 export function AdLivePreview(props: AdLivePreviewProps) {

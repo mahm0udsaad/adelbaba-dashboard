@@ -10,6 +10,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts"
 import { useI18n } from "@/lib/i18n/context"
 import { DollarSign, TrendingUp, TrendingDown, Download } from "lucide-react"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 type WalletTrendPoint = { date: string; totalAmount: number; count?: number }
 type WalletSummary = {
@@ -150,7 +151,7 @@ export default function WalletPage() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${(data?.totalIncome || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">${toEnglishLocaleString(data?.totalIncome || 0)}</div>
                 <div className="flex items-center text-xs text-muted-foreground">
                   {(data?.totalIncome || 0) >= (data?.totalExpenses || 0) ? (
                     <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
@@ -167,7 +168,7 @@ export default function WalletPage() {
                 <CardTitle className="text-sm font-medium">{t.totalExpenses || "Total Expenses"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${(data?.totalExpenses || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">${toEnglishLocaleString(data?.totalExpenses || 0)}</div>
               </CardContent>
             </Card>
 
@@ -176,7 +177,7 @@ export default function WalletPage() {
                 <CardTitle className="text-sm font-medium">{t.availableBalance || "Available Balance"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${(data?.availableBalance || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">${toEnglishLocaleString(data?.availableBalance || 0)}</div>
               </CardContent>
             </Card>
 
@@ -185,7 +186,7 @@ export default function WalletPage() {
                 <CardTitle className="text-sm font-medium">{t.netProfit || "Net Profit"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${(data?.netProfit || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">${toEnglishLocaleString(data?.netProfit || 0)}</div>
               </CardContent>
             </Card>
           </div>

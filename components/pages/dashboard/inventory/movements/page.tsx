@@ -18,6 +18,7 @@ import {
 } from "@/src/services/inventory-api"
 import { useI18n } from "@/lib/i18n/context"
 import { Loader2 } from "lucide-react"
+import { toEnglishLocaleDateString } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 
 export default function MovementsPage() {
@@ -107,7 +108,7 @@ export default function MovementsPage() {
                     <TableCell>{row.quantity}</TableCell>
                     <TableCell className={row.reserved_delta > 0 ? "text-blue-600" : ""}>{row.reserved_delta}</TableCell>
                     <TableCell className={row.on_hand_delta > 0 ? "text-green-600" : row.on_hand_delta < 0 ? "text-red-600" : ""}>{row.on_hand_delta}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{new Date(row.created_at).toLocaleString()}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{toEnglishLocaleDateString(row.created_at, { dateStyle: "short", timeStyle: "short" })}</TableCell>
                     <TableCell className="text-xs">{row.warehouse?.name}</TableCell>
                     <TableCell className="text-right">
                       <Button size="sm" variant="outline" onClick={openOperatePage}>

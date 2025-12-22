@@ -13,6 +13,7 @@ import { Plus, Shield, ExternalLink, Download, AlertTriangle, CheckCircle, FileT
 import { toast } from "@/hooks/use-toast"
 import { useI18n } from "@/lib/i18n/context"
 import { certificatesApi, CertificateItem } from "@/src/services/certificates"
+import { toEnglishLocaleDateString } from "@/lib/utils"
 
 interface Certificate {
   id: string
@@ -217,7 +218,7 @@ export default function CertificatesPage() {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return ""
-    return new Date(dateString).toLocaleDateString(isArabic ? "ar-SA" : "en-US", {
+    return toEnglishLocaleDateString(dateString, {
       year: "numeric",
       month: "short",
       day: "numeric",

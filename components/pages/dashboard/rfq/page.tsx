@@ -15,6 +15,7 @@ import { listMarketRFQs, getDashboardMetrics, type RFQListItem, type RFQFilters 
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { toast } from "@/hooks/use-toast"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleDateString } from "@/lib/utils"
 
 // Dashboard metrics interface
 interface DashboardMetrics {
@@ -219,7 +220,7 @@ export default function RFQPage() {
                         <span className="text-muted-foreground">{q.currency}</span>
                       )}
                       {q.created_at && (
-                        <span className="text-muted-foreground">{new Date(q.created_at).toLocaleDateString()}</span>
+                        <span className="text-muted-foreground">{toEnglishLocaleDateString(q.created_at)}</span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">

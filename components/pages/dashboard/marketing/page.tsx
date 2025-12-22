@@ -10,10 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { useMockData } from "@/lib/mock-data-context"
+import { useI18n } from "@/lib/i18n/context"
 import { Check, Search, Send, Users } from "lucide-react"
+import { toast } from "sonner"
 
 type MockCrmContact = {
   id: string
@@ -46,27 +47,27 @@ type CampaignDraft = {
 
 const DRAFT_KEY = "adelbaba_marketing_email_campaign_draft_v1"
 
-function safeParseDraft(raw: string | null): CampaignDraft | null {
+function safeParseDraft(raw: string | null, fallbacks: CampaignDraft): CampaignDraft | null {
   if (!raw) return null
   try {
     const parsed = JSON.parse(raw) as Partial<CampaignDraft>
     if (!parsed || typeof parsed !== "object") return null
     return {
-      campaignName: String(parsed.campaignName ?? "New Email Campaign"),
-      subject: String(parsed.subject ?? ""),
-      preheader: String(parsed.preheader ?? ""),
-      fromName: String(parsed.fromName ?? "Adilbaba Supplier"),
-      replyTo: String(parsed.replyTo ?? ""),
-      headline: String(parsed.headline ?? "A special offer for you"),
-      message: String(parsed.message ?? "Write your message here..."),
-      ctaText: String(parsed.ctaText ?? "Shop now"),
-      ctaUrl: String(parsed.ctaUrl ?? "https://"),
-      brandColor: String(parsed.brandColor ?? "#2563eb"),
-      backgroundColor: String(parsed.backgroundColor ?? "#f8fafc"),
-      includeLogo: Boolean(parsed.includeLogo ?? true),
-      logoUrl: String(parsed.logoUrl ?? "/logo-black.webp"),
-      footerNote: String(parsed.footerNote ?? "You received this email because you're a customer in our CRM."),
-      selectedIds: Array.isArray(parsed.selectedIds) ? (parsed.selectedIds as any[]).map(String) : [],
+      campaignName: String(parsed.campaignName ?? fallbacks.campaignName),
+      subject: String(parsed.subject ?? fallbacks.subject),
+      preheader: String(parsed.preheader ?? fallbacks.preheader),
+      fromName: String(parsed.fromName ?? fallbacks.fromName),
+      replyTo: String(parsed.replyTo ?? fallbacks.replyTo),
+      headline: String(parsed.headline ?? fallbacks.headline),
+      message: String(parsed.message ?? fallbacks.message),
+      ctaText: String(parsed.ctaText ?? fallbacks.ctaText),
+      ctaUrl: String(parsed.ctaUrl ?? fallbacks.ctaUrl),
+      brandColor: String(parsed.brandColor ?? fallbacks.brandColor),
+      backgroundColor: String(parsed.backgroundColor ?? fallbacks.backgroundColor),
+      includeLogo: Boolean(parsed.includeLogo ?? fallbacks.includeLogo),
+      logoUrl: String(parsed.logoUrl ?? fallbacks.logoUrl),
+      footerNote: String(parsed.footerNote ?? fallbacks.footerNote),
+      selectedIds: Array.isArray(parsed.selectedIds) ? (parsed.selectedIds as any[]).map(String) : fallbacks.selectedIds,
     }
   } catch {
     return null
@@ -82,7 +83,13 @@ function escapeHtml(input: string) {
     .replaceAll("'", "&#039;")
 }
 
-function toEmailHtml(draft: CampaignDraft) {
+function toEmailHtml(
+  draft: CampaignDraft,
+  ui: {
+    badgeLabel: string
+    logoAlt: string
+  },
+) {
   const headline = escapeHtml(draft.headline).replaceAll("\n", "<br/>")
   const message = escapeHtml(draft.message).replaceAll("\n", "<br/>")
   const preheader = escapeHtml(draft.preheader)
@@ -106,14 +113,14 @@ function toEmailHtml(draft: CampaignDraft) {
             ${
               draft.includeLogo
                 ? `<tr><td style="padding:20px 20px 0 20px;">
-                    <img src="${escapeHtml(draft.logoUrl)}" alt="Logo" style="height:28px;max-width:160px;object-fit:contain;display:block;" />
+                    <img src="${escapeHtml(draft.logoUrl)}" alt="${escapeHtml(ui.logoAlt)}" style="height:28px;max-width:160px;object-fit:contain;display:block;" />
                   </td></tr>`
                 : ""
             }
             <tr>
               <td style="padding:20px;">
                 <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(37,99,235,0.10);color:${draft.brandColor};font-weight:600;font-size:12px;">
-                  Adilbaba Updates
+                  ${escapeHtml(ui.badgeLabel)}
                 </div>
                 <h1 style="margin:14px 0 10px 0;font-size:22px;line-height:1.25;color:#0f172a;">${headline}</h1>
                 <p style="margin:0 0 16px 0;font-size:14px;line-height:1.65;color:#334155;">${message}</p>
@@ -135,6 +142,7 @@ function toEmailHtml(draft: CampaignDraft) {
 }
 
 export default function MarketingEmailCampaignPage() {
+  const { t, formatMessage } = useI18n()
   const { contacts: rawContacts } = useMockData()
   const contacts = useMemo<MockCrmContact[]>(
     () => (Array.isArray(rawContacts) ? (rawContacts as any[]).map((c) => c as MockCrmContact) : []),
@@ -145,49 +153,43 @@ export default function MarketingEmailCampaignPage() {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<"all" | "active" | "prospect" | "inactive">("all")
 
+  const defaultDraft: CampaignDraft = useMemo(
+    () => ({
+      campaignName: t.marketingEmailCampaignDefaultName,
+      subject: "",
+      preheader: "",
+      fromName: t.marketingEmailCampaignDefaultFromName,
+      replyTo: "",
+      headline: t.marketingEmailCampaignDefaultHeadline,
+      message: t.marketingEmailCampaignDefaultMessage,
+      ctaText: t.marketingEmailCampaignDefaultCtaText,
+      ctaUrl: "https://",
+      brandColor: "#2563eb",
+      backgroundColor: "#f8fafc",
+      includeLogo: true,
+      logoUrl: "/logo-black.webp",
+      footerNote: t.marketingEmailCampaignDefaultFooterNote,
+      selectedIds: [],
+    }),
+    [t],
+  )
+
   const [draft, setDraft] = useState<CampaignDraft>(() => {
     if (typeof window === "undefined") {
-      return {
-        campaignName: "New Email Campaign",
-        subject: "",
-        preheader: "",
-        fromName: "Adilbaba Supplier",
-        replyTo: "",
-        headline: "A special offer for you",
-        message: "Write your message here...",
-        ctaText: "Shop now",
-        ctaUrl: "https://",
-        brandColor: "#2563eb",
-        backgroundColor: "#f8fafc",
-        includeLogo: true,
-        logoUrl: "/logo-black.webp",
-        footerNote: "You received this email because you're a customer in our CRM.",
-        selectedIds: [],
-      }
+      return defaultDraft
     }
-    const restored = safeParseDraft(localStorage.getItem(DRAFT_KEY))
-    return (
-      restored ?? {
-        campaignName: "New Email Campaign",
-        subject: "",
-        preheader: "",
-        fromName: "Adilbaba Supplier",
-        replyTo: "",
-        headline: "A special offer for you",
-        message: "Write your message here...",
-        ctaText: "Shop now",
-        ctaUrl: "https://",
-        brandColor: "#2563eb",
-        backgroundColor: "#f8fafc",
-        includeLogo: true,
-        logoUrl: "/logo-black.webp",
-        footerNote: "You received this email because you're a customer in our CRM.",
-        selectedIds: [],
-      }
-    )
+    const restored = safeParseDraft(localStorage.getItem(DRAFT_KEY), defaultDraft)
+    return restored ?? defaultDraft
   })
 
-  const previewHtml = useMemo(() => toEmailHtml(draft), [draft])
+  const previewHtml = useMemo(
+    () =>
+      toEmailHtml(draft, {
+        badgeLabel: t.marketingEmailCampaignEmailBadge,
+        logoAlt: t.marketingEmailCampaignLogoAlt,
+      }),
+    [draft, t],
+  )
   const previewFrameRef = useRef<HTMLIFrameElement | null>(null)
 
   const selectedSet = useMemo(() => new Set(draft.selectedIds), [draft.selectedIds])
@@ -252,10 +254,8 @@ export default function MarketingEmailCampaignPage() {
 
   const sendCampaign = async () => {
     if (!canSend) {
-      toast({
-        title: "Missing required info",
-        description: "Please select recipients and fill subject + message.",
-        variant: "destructive",
+      toast.error(t.marketingEmailCampaignMissingRequiredTitle, {
+        description: t.marketingEmailCampaignMissingRequiredDescription,
       })
       return
     }
@@ -272,7 +272,9 @@ export default function MarketingEmailCampaignPage() {
       text: `${draft.headline}\n\n${draft.message}\n\n${draft.ctaText}: ${draft.ctaUrl}`,
     }
 
-    const id = toast.loading("Sending campaign...", { description: `Recipients: ${recipients.length}` })
+    const id = toast.loading(t.marketingEmailCampaignSendingTitle, {
+      description: formatMessage("marketingEmailCampaignRecipientsToast", { count: recipients.length }),
+    })
     try {
       const res = await fetch("/api/marketing/email-campaign", {
         method: "POST",
@@ -282,43 +284,51 @@ export default function MarketingEmailCampaignPage() {
       const body = (await res.json()) as any
       if (!res.ok || !body?.ok) throw new Error(body?.error || "Failed to send")
 
-      toast.success("Campaign sent", { id, description: `Sent to ${body.sentCount} recipients.` })
+      toast.success(t.marketingEmailCampaignSentTitle, {
+        id,
+        description: formatMessage("marketingEmailCampaignSentToast", { count: body.sentCount }),
+      })
       setTab("recipients")
     } catch (e: any) {
-      toast.error("Send failed", { id, description: e?.message || "Please try again." })
+      toast.error(t.marketingEmailCampaignSendFailedTitle, {
+        id,
+        description: e?.message || t.marketingEmailCampaignSendFailedFallbackDescription,
+      })
     }
   }
 
   const resetDraft = () => {
     setDraft((d) => ({
       ...d,
-      campaignName: "New Email Campaign",
+      campaignName: defaultDraft.campaignName,
       subject: "",
       preheader: "",
-      headline: "A special offer for you",
-      message: "Write your message here...",
-      ctaText: "Shop now",
+      headline: defaultDraft.headline,
+      message: defaultDraft.message,
+      ctaText: defaultDraft.ctaText,
       ctaUrl: "https://",
       brandColor: "#2563eb",
       backgroundColor: "#f8fafc",
       includeLogo: true,
       logoUrl: "/logo-black.webp",
-      footerNote: "You received this email because you're a customer in our CRM.",
+      footerNote: defaultDraft.footerNote,
     }))
-    toast({ title: "Draft reset", description: "Email content has been reset (recipients kept)." })
+    toast.success(t.marketingEmailCampaignDraftResetTitle, {
+      description: t.marketingEmailCampaignDraftResetDescription,
+    })
   }
 
   return (
     <div className="p-4 space-y-6">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold leading-tight">Email Marketing Campaign</h1>
+          <h1 className="text-xl font-semibold leading-tight">{t.marketingEmailCampaignTitle}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Select recipients from CRM and design a bulk email with a live preview.
+            {t.marketingEmailCampaignSubtitle}
           </p>
         </div>
         <Badge variant="secondary" className="shrink-0">
-          Emails only (beta)
+          {t.marketingEmailCampaignEmailsOnlyBadge}
         </Badge>
       </div>
 
@@ -326,18 +336,18 @@ export default function MarketingEmailCampaignPage() {
         <TabsList className="grid grid-cols-2 w-full">
           <TabsTrigger value="recipients" className="gap-2">
             <Users className="h-4 w-4" />
-            Recipients
+            {t.marketingEmailCampaignRecipientsTab}
           </TabsTrigger>
           <TabsTrigger value="design" className="gap-2">
             <Send className="h-4 w-4" />
-            Design & Send
+            {t.marketingEmailCampaignDesignTab}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="recipients" className="mt-4 space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Choose customers</CardTitle>
+              <CardTitle className="text-base">{t.marketingEmailCampaignChooseCustomersTitle}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -346,7 +356,7 @@ export default function MarketingEmailCampaignPage() {
                   <Input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search by name, company, email, tags..."
+                    placeholder={t.marketingEmailCampaignSearchPlaceholder}
                     className="pl-9"
                   />
                 </div>
@@ -358,7 +368,7 @@ export default function MarketingEmailCampaignPage() {
                     size="sm"
                     onClick={() => setStatus("all")}
                   >
-                    All
+                    {t.marketingEmailCampaignAllFilter}
                   </Button>
                   <Button
                     type="button"
@@ -366,7 +376,7 @@ export default function MarketingEmailCampaignPage() {
                     size="sm"
                     onClick={() => setStatus("active")}
                   >
-                    Active
+                    {t.active}
                   </Button>
                   <Button
                     type="button"
@@ -374,26 +384,27 @@ export default function MarketingEmailCampaignPage() {
                     size="sm"
                     onClick={() => setStatus("prospect")}
                   >
-                    Prospect
+                    {t.prospect}
                   </Button>
                 </div>
               </div>
 
               <div className="flex items-center justify-between gap-3">
                 <div className="text-sm text-muted-foreground">
-                  Showing <span className="font-medium text-foreground">{filteredContacts.length}</span>{" "}
-                  {filteredContacts.length === 1 ? "contact" : "contacts"} • Selected{" "}
-                  <span className="font-medium text-foreground">{selectedContacts.length}</span>
+                  {formatMessage("marketingEmailCampaignShowingCounts", {
+                    shown: filteredContacts.length,
+                    selected: selectedContacts.length,
+                  })}
                 </div>
                 <Button type="button" variant="outline" size="sm" onClick={toggleSelectAllFiltered} disabled={filteredContacts.length === 0}>
-                  {allFilteredSelected ? "Unselect all" : "Select all"}
+                  {allFilteredSelected ? t.marketingEmailCampaignUnselectAll : t.marketingEmailCampaignSelectAll}
                 </Button>
               </div>
 
               <Separator />
 
               {filteredContacts.length === 0 ? (
-                <div className="py-10 text-center text-sm text-muted-foreground">No contacts match your search.</div>
+                <div className="py-10 text-center text-sm text-muted-foreground">{t.marketingEmailCampaignNoContactsMatch}</div>
               ) : (
                 <div className="grid gap-3">
                   {filteredContacts.map((c) => {
@@ -457,7 +468,7 @@ export default function MarketingEmailCampaignPage() {
 
               <div className="pt-2 flex justify-end">
                 <Button type="button" onClick={() => setTab("design")} disabled={selectedContacts.length === 0}>
-                  Continue to design
+                  {t.marketingEmailCampaignContinueToDesign}
                 </Button>
               </div>
             </CardContent>
@@ -468,47 +479,55 @@ export default function MarketingEmailCampaignPage() {
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Campaign content</CardTitle>
+                <CardTitle className="text-base">{t.marketingEmailCampaignContentTitle}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-3">
                   <div className="grid gap-2">
-                    <Label>Campaign name</Label>
+                    <Label>{t.marketingEmailCampaignNameLabel}</Label>
                     <Input value={draft.campaignName} onChange={(e) => setDraft((d) => ({ ...d, campaignName: e.target.value }))} />
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Subject *</Label>
-                    <Input value={draft.subject} onChange={(e) => setDraft((d) => ({ ...d, subject: e.target.value }))} placeholder="e.g., New arrivals + special pricing" />
+                    <Label>{t.marketingEmailCampaignSubjectLabel}</Label>
+                    <Input
+                      value={draft.subject}
+                      onChange={(e) => setDraft((d) => ({ ...d, subject: e.target.value }))}
+                      placeholder={t.marketingEmailCampaignSubjectPlaceholder}
+                    />
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Preheader</Label>
-                    <Input value={draft.preheader} onChange={(e) => setDraft((d) => ({ ...d, preheader: e.target.value }))} placeholder="Short preview text shown in inbox" />
+                    <Label>{t.marketingEmailCampaignPreheaderLabel}</Label>
+                    <Input
+                      value={draft.preheader}
+                      onChange={(e) => setDraft((d) => ({ ...d, preheader: e.target.value }))}
+                      placeholder={t.marketingEmailCampaignPreheaderPlaceholder}
+                    />
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Headline</Label>
+                    <Label>{t.marketingEmailCampaignHeadlineLabel}</Label>
                     <Input value={draft.headline} onChange={(e) => setDraft((d) => ({ ...d, headline: e.target.value }))} />
                   </div>
 
                   <div className="grid gap-2">
-                    <Label>Message *</Label>
+                    <Label>{t.marketingEmailCampaignMessageLabel}</Label>
                     <Textarea
                       value={draft.message}
                       onChange={(e) => setDraft((d) => ({ ...d, message: e.target.value }))}
                       rows={6}
-                      placeholder="Write your email message..."
+                      placeholder={t.marketingEmailCampaignMessagePlaceholder}
                     />
                   </div>
 
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="grid gap-2">
-                      <Label>CTA text</Label>
+                      <Label>{t.marketingEmailCampaignCtaTextLabel}</Label>
                       <Input value={draft.ctaText} onChange={(e) => setDraft((d) => ({ ...d, ctaText: e.target.value }))} />
                     </div>
                     <div className="grid gap-2">
-                      <Label>CTA link</Label>
+                      <Label>{t.marketingEmailCampaignCtaLinkLabel}</Label>
                       <Input value={draft.ctaUrl} onChange={(e) => setDraft((d) => ({ ...d, ctaUrl: e.target.value }))} />
                     </div>
                   </div>
@@ -519,7 +538,7 @@ export default function MarketingEmailCampaignPage() {
                 <div className="grid gap-3">
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="grid gap-2">
-                      <Label>Brand color</Label>
+                      <Label>{t.marketingEmailCampaignBrandColorLabel}</Label>
                       <div className="flex items-center gap-2">
                         <Input
                           type="color"
@@ -531,7 +550,7 @@ export default function MarketingEmailCampaignPage() {
                       </div>
                     </div>
                     <div className="grid gap-2">
-                      <Label>Background</Label>
+                      <Label>{t.marketingEmailCampaignBackgroundLabel}</Label>
                       <div className="flex items-center gap-2">
                         <Input
                           type="color"
@@ -546,22 +565,22 @@ export default function MarketingEmailCampaignPage() {
 
                   <div className="flex items-center justify-between rounded-xl border p-3">
                     <div>
-                      <div className="text-sm font-medium">Include logo</div>
-                      <div className="text-xs text-muted-foreground">Uses your dashboard logo URL (editable)</div>
+                      <div className="text-sm font-medium">{t.marketingEmailCampaignIncludeLogoTitle}</div>
+                      <div className="text-xs text-muted-foreground">{t.marketingEmailCampaignIncludeLogoSubtitle}</div>
                     </div>
                     <Switch checked={draft.includeLogo} onCheckedChange={(v) => setDraft((d) => ({ ...d, includeLogo: v }))} />
                   </div>
 
                   {draft.includeLogo ? (
                     <div className="grid gap-2">
-                      <Label>Logo URL</Label>
+                      <Label>{t.marketingEmailCampaignLogoUrlLabel}</Label>
                       <Input value={draft.logoUrl} onChange={(e) => setDraft((d) => ({ ...d, logoUrl: e.target.value }))} />
-                      <div className="text-xs text-muted-foreground">Tip: you can use `/logo-black.webp` or any public image URL.</div>
+                      <div className="text-xs text-muted-foreground">{t.marketingEmailCampaignLogoUrlTip}</div>
                     </div>
                   ) : null}
 
                   <div className="grid gap-2">
-                    <Label>Footer note</Label>
+                    <Label>{t.marketingEmailCampaignFooterNoteLabel}</Label>
                     <Textarea value={draft.footerNote} onChange={(e) => setDraft((d) => ({ ...d, footerNote: e.target.value }))} rows={3} />
                   </div>
                 </div>
@@ -570,23 +589,23 @@ export default function MarketingEmailCampaignPage() {
 
                 <div className="grid gap-3">
                   <div className="text-sm text-muted-foreground">
-                    Recipients: <span className="font-medium text-foreground">{selectedContacts.length}</span>
+                    {formatMessage("marketingEmailCampaignRecipientsInline", { count: selectedContacts.length })}
                   </div>
                   <div className="flex gap-2">
                     <Button type="button" variant="outline" onClick={() => setTab("recipients")}>
-                      Back
+                      {t.back}
                     </Button>
                     <Button type="button" variant="outline" onClick={resetDraft}>
-                      Reset email
+                      {t.marketingEmailCampaignResetEmailButton}
                     </Button>
                     <Button type="button" className="flex-1" onClick={sendCampaign} disabled={!canSend}>
                       <Send className="h-4 w-4 mr-2" />
-                      Send campaign
+                      {t.marketingEmailCampaignSendButton}
                     </Button>
                   </div>
                   {!canSend ? (
                     <div className="text-xs text-muted-foreground">
-                      Required: at least 1 recipient + subject + message.
+                      {t.marketingEmailCampaignRequiredHint}
                     </div>
                   ) : null}
                 </div>
@@ -595,11 +614,11 @@ export default function MarketingEmailCampaignPage() {
 
             <Card className="overflow-hidden">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Live preview</CardTitle>
+                <CardTitle className="text-base">{t.marketingEmailCampaignLivePreviewTitle}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="text-xs text-muted-foreground">
-                  This is a simplified email builder preview (safe HTML only). Real providers will add tracking + unsubscribe later.
+                  {t.marketingEmailCampaignLivePreviewSubtitle}
                 </div>
                 <div className="rounded-xl border overflow-hidden bg-white">
                   <iframe

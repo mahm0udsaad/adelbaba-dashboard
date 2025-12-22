@@ -29,6 +29,7 @@ import { toast } from "@/hooks/use-toast"
 import { useI18n } from "@/lib/i18n/context"
 import { useMockData } from "@/lib/mock-data-context"
 import { useApiWithFallback } from "@/hooks/useApiWithFallback"
+import { toEnglishLocaleDateString, toEnglishLocaleTimeString } from "@/lib/utils"
 import { inboxApi } from "@/src/services/inbox-api"
 
 interface Message {
@@ -260,7 +261,7 @@ function InboxContent() {
 
   const formatDate = (dateString: string) => {
     try {
-      return new Date(dateString).toLocaleDateString(isArabic ? "ar-SA" : "en-US", {
+      return toEnglishLocaleDateString(dateString, {
         year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
       })
     } catch { return dateString }
@@ -268,7 +269,7 @@ function InboxContent() {
 
   const formatTime = (dateString: string) => {
     try {
-      return new Date(dateString).toLocaleTimeString(isArabic ? "ar-SA" : "en-US", {
+      return toEnglishLocaleTimeString(dateString, {
         hour: "2-digit", minute: "2-digit",
       })
     } catch { return "" }

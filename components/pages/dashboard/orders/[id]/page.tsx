@@ -48,6 +48,7 @@ import {
 import Link from "next/link"
 import apiClient from "@/lib/axios"
 import { toast } from "@/hooks/use-toast"
+import { toEnglishLocaleDateString } from "@/lib/utils"
 
 interface Order {
   id: string
@@ -455,7 +456,7 @@ export default function OrderDetailPage() {
                   {order.tradeAssurance.releaseDate && (
                     <div>
                       <p className="text-sm font-medium">{isArabic ? "تاريخ التحرير:" : "Release Date:"}</p>
-                      <p>{new Date(order.tradeAssurance.releaseDate).toLocaleDateString()}</p>
+                      <p>{toEnglishLocaleDateString(order.tradeAssurance.releaseDate)}</p>
                     </div>
                   )}
                 </div>
@@ -539,13 +540,13 @@ export default function OrderDetailPage() {
                 {order.shipping.shippedDate && (
                   <div>
                     <p className="text-sm font-medium">{isArabic ? "تاريخ الشحن:" : "Shipped Date:"}</p>
-                    <p>{new Date(order.shipping.shippedDate).toLocaleDateString()}</p>
+                    <p>{toEnglishLocaleDateString(order.shipping.shippedDate)}</p>
                   </div>
                 )}
                 {order.shipping.deliveredDate && (
                   <div>
                     <p className="text-sm font-medium">{isArabic ? "تاريخ التسليم:" : "Delivered Date:"}</p>
-                    <p>{new Date(order.shipping.deliveredDate).toLocaleDateString()}</p>
+                    <p>{toEnglishLocaleDateString(order.shipping.deliveredDate)}</p>
                   </div>
                 )}
               </div>
@@ -700,11 +701,11 @@ export default function OrderDetailPage() {
             <CardContent className="space-y-3">
               <div>
                 <p className="text-sm font-medium">{isArabic ? "تاريخ الطلب:" : "Order Date:"}</p>
-                <p className="text-sm text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
+                <p className="text-sm text-muted-foreground">{toEnglishLocaleDateString(order.createdAt)}</p>
               </div>
               <div>
                 <p className="text-sm font-medium">{isArabic ? "آخر تحديث:" : "Last Updated:"}</p>
-                <p className="text-sm text-muted-foreground">{new Date(order.updatedAt).toLocaleDateString()}</p>
+                <p className="text-sm text-muted-foreground">{toEnglishLocaleDateString(order.updatedAt)}</p>
               </div>
             </CardContent>
           </Card>

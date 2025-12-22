@@ -12,6 +12,7 @@ import { useI18n } from "@/lib/i18n/context"
 import type { Notification } from "@/src/services/notifications-api"
 import { useNotifications } from "@/src/contexts/notification-context"
 import { CheckCheck, Wifi, WifiOff } from "lucide-react"
+import { toEnglishLocaleDateString } from "@/lib/utils"
 
 interface NotificationsSheetProps {
   open: boolean
@@ -80,10 +81,11 @@ function formatTimestamp(timestamp: string | null | undefined, locale: string): 
   if (Number.isNaN(parsed.valueOf())) {
     return timestamp
   }
-  return new Intl.DateTimeFormat(locale, {
+  // Always use English numerals regardless of locale
+  return toEnglishLocaleDateString(parsed, {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(parsed)
+  })
 }
 
 export function NotificationsSheet({ open, onOpenChange }: NotificationsSheetProps) {

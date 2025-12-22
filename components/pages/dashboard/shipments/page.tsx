@@ -9,6 +9,7 @@ import { useI18n } from "@/lib/i18n/context"
 import { BarChart3 as BarIcon, Download } from "lucide-react"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 type ShipmentSummary = {
   delivered: number
@@ -117,7 +118,7 @@ export default function ShipmentsPage() {
               <SelectItem value="1year">{t.year1}</SelectItem>
             </SelectContent>
           </Select>
-          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground"><BarIcon className="h-4 w-4" />{total.toLocaleString()}</div>
+          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground"><BarIcon className="h-4 w-4" />{toEnglishLocaleString(total)}</div>
         </div>
       </div>
 
@@ -143,7 +144,7 @@ export default function ShipmentsPage() {
                 <CardTitle className="text-sm font-medium">{t.pending}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{(data?.pending || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">{toEnglishLocaleString(data?.pending || 0)}</div>
               </CardContent>
             </Card>
             <Card>
@@ -151,7 +152,7 @@ export default function ShipmentsPage() {
                 <CardTitle className="text-sm font-medium">{t.delivered}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{(data?.delivered || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">{toEnglishLocaleString(data?.delivered || 0)}</div>
               </CardContent>
             </Card>
             <Card>
@@ -159,7 +160,7 @@ export default function ShipmentsPage() {
                 <CardTitle className="text-sm font-medium">{t.returned || "Returned"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{(data?.returned || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold">{toEnglishLocaleString(data?.returned || 0)}</div>
               </CardContent>
             </Card>
             <Card>
@@ -167,7 +168,7 @@ export default function ShipmentsPage() {
                 <CardTitle className="text-sm font-medium">{t.totalOrders || "Total"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{total.toLocaleString()}</div>
+                <div className="text-2xl font-bold">{toEnglishLocaleString(total)}</div>
               </CardContent>
             </Card>
           </div>

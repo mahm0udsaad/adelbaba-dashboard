@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Crown, CheckCircle, ArrowRight } from "lucide-react"
 import { listCompanyPlans, getCurrentCompanyPlan, type CompanyPlan, type PlanFeature } from "@/src/services/plans-api"
 import { toast } from "@/hooks/use-toast"
+import { toEnglishLocaleString, toEnglishLocaleDateString } from "@/lib/utils"
 
 type SubscriptionStatus = "active" | "expired" | "pending" | string
 
@@ -172,12 +173,12 @@ export default function MembershipPage() {
                   )}
                   {membershipData.currentPlan?.startedAt && (
                     <span>
-                      {isArabic ? "البدء:" : "Start:"} {new Date(membershipData.currentPlan.startedAt).toLocaleDateString()}
+                      {isArabic ? "البدء:" : "Start:"} {toEnglishLocaleDateString(membershipData.currentPlan.startedAt)}
                     </span>
                   )}
                   {membershipData.currentPlan?.expiresAt && (
                     <span>
-                      {isArabic ? "الانتهاء:" : "Expires:"} {new Date(membershipData.currentPlan.expiresAt).toLocaleDateString()}
+                      {isArabic ? "الانتهاء:" : "Expires:"} {toEnglishLocaleDateString(membershipData.currentPlan.expiresAt)}
                     </span>
                   )}
                 </CardDescription>
@@ -238,7 +239,7 @@ export default function MembershipPage() {
                   {plan.badge && <div className="text-4xl mb-2">{plan.badge}</div>}
                   <CardTitle className={plan.color}>{plan.name}</CardTitle>
                   <div className="text-3xl font-bold">
-                    ${Number(plan.price).toLocaleString()}
+                    ${toEnglishLocaleString(plan.price)}
                     <span className="text-sm font-normal text-muted-foreground">
                       /{plan.period || plan.payment_rate || "period"}
                     </span>

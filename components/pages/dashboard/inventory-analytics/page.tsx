@@ -6,6 +6,7 @@ import { format, subMonths } from "date-fns"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 type InventorySummary = {
   inStock: number
@@ -124,7 +125,7 @@ export default function InventoryAnalyticsPage() {
               <CardTitle className="text-sm font-medium text-white">{"In Stock"}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{(data?.inStock || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">{toEnglishLocaleString(data?.inStock || 0)}</div>
             </CardContent>
           </Card>
           <Card className="bg-purple-500">
@@ -132,7 +133,7 @@ export default function InventoryAnalyticsPage() {
               <CardTitle className="text-sm font-medium text-white">{"Low Stock"}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{(data?.lowStock || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">{toEnglishLocaleString(data?.lowStock || 0)}</div>
             </CardContent>
           </Card>
           <Card className="bg-orange-500">
@@ -140,7 +141,7 @@ export default function InventoryAnalyticsPage() {
               <CardTitle className="text-sm font-medium text-white">{"Out of Stock"}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{(data?.outOfStock || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">{toEnglishLocaleString(data?.outOfStock || 0)}</div>
             </CardContent>
           </Card>
           <Card className="bg-red-500">
@@ -148,7 +149,7 @@ export default function InventoryAnalyticsPage() {
               <CardTitle className="text-sm font-medium text-white">{t.totalValue}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">${(data?.totalValue || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">${toEnglishLocaleString(data?.totalValue || 0)}</div>
             </CardContent>
           </Card>
         </div>

@@ -10,6 +10,7 @@ import { DollarSign, Package, Shield } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ordersApi, type OrderListItem } from "@/src/services/orders-api"
 import { toast } from "@/hooks/use-toast"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 // Map API response to frontend Order type
 function mapApiOrderToOrder(apiOrder: OrderListItem): Order {
@@ -139,7 +140,7 @@ export default function OrdersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              ${(filteredOrders || []).reduce((sum, order) => sum + order.total, 0).toLocaleString()}
+              ${toEnglishLocaleString((filteredOrders || []).reduce((sum, order) => sum + order.total, 0))}
             </div>
           </CardContent>
         </Card>

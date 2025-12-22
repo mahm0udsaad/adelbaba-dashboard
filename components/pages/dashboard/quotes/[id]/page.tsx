@@ -34,6 +34,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleString, toEnglishLocaleDateString } from "@/lib/utils"
 
 const statusColors = {
   Submitted: "bg-blue-100 text-blue-800 border-blue-200",
@@ -220,7 +221,7 @@ export default function QuoteDetailPage() {
                   <div>
                     <p className="text-sm font-medium">{t.quoteSubmittedAt}</p>
                     <p className="text-sm text-muted-foreground">
-                      {new Date(quote.submitted_at).toLocaleString()}
+                      {toEnglishLocaleDateString(quote.submitted_at, { dateStyle: "short", timeStyle: "short" })}
                     </p>
                   </div>
                 </div>
@@ -231,7 +232,7 @@ export default function QuoteDetailPage() {
                     <div>
                       <p className="text-sm font-medium">{t.quoteWithdrawnAt}</p>
                       <p className="text-sm text-muted-foreground">
-                        {new Date(quote.withdrawn_at).toLocaleString()}
+                        {toEnglishLocaleDateString(quote.withdrawn_at, { dateStyle: "short", timeStyle: "short" })}
                       </p>
                     </div>
                   </div>
@@ -310,10 +311,10 @@ export default function QuoteDetailPage() {
                 <p className="text-sm font-medium mb-1">{t.quoteRfqDatesLabel}</p>
                 <div className="space-y-1 text-sm text-muted-foreground">
                   <p>
-                    {t.quoteRfqCreatedLabel} {new Date(quote.rfq.created_at).toLocaleDateString()}
+                    {t.quoteRfqCreatedLabel} {toEnglishLocaleDateString(quote.rfq.created_at)}
                   </p>
                   <p>
-                    {t.quoteRfqUpdatedLabel} {new Date(quote.rfq.updated_at).toLocaleDateString()}
+                    {t.quoteRfqUpdatedLabel} {toEnglishLocaleDateString(quote.rfq.updated_at)}
                   </p>
                 </div>
               </div>

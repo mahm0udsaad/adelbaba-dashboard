@@ -5,6 +5,7 @@ import { Eye, Shield, Truck, CheckCircle, AlertTriangle, Package, Building, Cloc
 import Link from "next/link"
 import { statusColors, escrowStatusColors } from "./constants"
 import type { Order } from "./types"
+import { toEnglishLocaleDateString, toEnglishLocaleString } from "@/lib/utils"
 
 interface OrderCardProps {
   order: Order
@@ -108,9 +109,9 @@ export function OrderCard({ order, labels }: OrderCardProps) {
             </div>
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">
-                {labels.orderDate} {new Date(order.createdAt).toLocaleDateString()}
+                {labels.orderDate} {toEnglishLocaleDateString(order.createdAt)}
               </div>
-              <div className="text-lg font-bold text-primary">${order.total.toLocaleString()}</div>
+              <div className="text-lg font-bold text-primary">${toEnglishLocaleString(order.total)}</div>
             </div>
           </div>
           <div className="flex flex-col gap-2 ml-4">

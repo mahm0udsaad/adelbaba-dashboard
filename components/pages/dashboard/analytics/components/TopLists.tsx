@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { AnalyticsData } from "./types"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 interface TopListsProps {
   data: AnalyticsData
@@ -32,7 +33,7 @@ export function TopLists({ data, variant }: TopListsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-primary">${(product.revenue || 0).toLocaleString()}</div>
+                    <div className="font-bold text-primary">${toEnglishLocaleString(product.revenue || 0)}</div>
                     <div className="text-sm text-muted-foreground">{t.revenue}</div>
                   </div>
                 </div>
@@ -61,7 +62,7 @@ export function TopLists({ data, variant }: TopListsProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-primary">${(buyer.revenue || 0).toLocaleString()}</div>
+                    <div className="font-bold text-primary">${toEnglishLocaleString(buyer.revenue || 0)}</div>
                     <div className="text-sm text-muted-foreground">{t.revenue}</div>
                   </div>
                 </div>

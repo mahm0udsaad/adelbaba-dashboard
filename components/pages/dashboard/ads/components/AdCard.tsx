@@ -7,6 +7,7 @@ import type { Ad } from "./types"
 import { useI18n } from "@/lib/i18n/context"
 import { adsApi } from "@/src/services/ads-api"
 import { useState } from "react"
+import { toEnglishLocaleString, toEnglishLocaleDateString } from "@/lib/utils"
 
 interface AdCardProps {
   ad: Ad
@@ -27,7 +28,7 @@ function getStatusColor(status: string) {
 }
 
 function formatDate(dateString: string, isArabic: boolean) {
-  return new Date(dateString).toLocaleDateString(isArabic ? "ar-SA" : "en-US", {
+  return toEnglishLocaleDateString(dateString, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -107,14 +108,14 @@ export function AdCard({ ad, isArabic }: AdCardProps) {
           <div className="flex items-center gap-2">
             <Eye className="h-4 w-4 text-muted-foreground" />
             <div>
-              <p className="text-sm font-medium">{ad.impressions.toLocaleString()}</p>
+              <p className="text-sm font-medium">{toEnglishLocaleString(ad.impressions)}</p>
               <p className="text-xs text-muted-foreground">{t.impressions}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <MousePointer className="h-4 w-4 text-muted-foreground" />
             <div>
-              <p className="text-sm font-medium">{ad.clicks.toLocaleString()}</p>
+              <p className="text-sm font-medium">{toEnglishLocaleString(ad.clicks)}</p>
               <p className="text-xs text-muted-foreground">{t.clicks}</p>
             </div>
           </div>

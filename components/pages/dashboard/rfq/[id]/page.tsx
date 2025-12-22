@@ -39,6 +39,7 @@ import Link from "next/link"
 import { toast } from "@/hooks/use-toast"
 import { getRFQDetails, type RFQ } from "@/src/services/rfq-api"
 import { createQuote, listQuotes, withdrawQuote, type QuoteListItem } from "@/src/services/quotes-api"
+import { toEnglishLocaleString, toEnglishLocaleDateString } from "@/lib/utils"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -510,7 +511,7 @@ export default function RFQDetailPage() {
                     <Package className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm font-medium">{isArabic ? "الكمية المطلوبة" : "Target Quantity"}</p>
-                      <p className="text-sm text-muted-foreground">{rfq.targetQty.toLocaleString()} units</p>
+                      <p className="text-sm text-muted-foreground">{toEnglishLocaleString(rfq.targetQty)} units</p>
                     </div>
                   </div>
 
@@ -603,11 +604,11 @@ export default function RFQDetailPage() {
             <CardContent className="space-y-3">
               <div>
                 <p className="text-sm font-medium">{isArabic ? "تاريخ النشر" : "Published"}</p>
-                <p className="text-sm text-muted-foreground">{new Date(rfq.createdAt).toLocaleDateString()}</p>
+                <p className="text-sm text-muted-foreground">{toEnglishLocaleDateString(rfq.createdAt)}</p>
               </div>
               <div>
                 <p className="text-sm font-medium">{isArabic ? "ينتهي في" : "Expires"}</p>
-                <p className="text-sm text-muted-foreground">{new Date(rfq.expiresAt).toLocaleDateString()}</p>
+                <p className="text-sm text-muted-foreground">{toEnglishLocaleDateString(rfq.expiresAt)}</p>
               </div>
             </CardContent>
           </Card>

@@ -39,8 +39,10 @@ export const getStatusColor = (status: string) => {
   }
 }
 
+import { toEnglishLocaleDateString } from "@/lib/utils"
+
 export const formatDate = (dateString: string, isArabic: boolean) => {
-  return new Date(dateString).toLocaleDateString(isArabic ? "ar-SA" : "en-US", {
+  return toEnglishLocaleDateString(dateString, {
     year: "numeric",
     month: "short",
     day: "numeric",

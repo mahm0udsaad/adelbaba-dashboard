@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DollarSign, ShoppingCart, Package, Users, TrendingUp, TrendingDown } from "lucide-react"
 import type { AnalyticsData } from "./types"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 interface KeyMetricsProps {
   data: AnalyticsData
@@ -17,7 +18,7 @@ export function KeyMetrics({ data }: KeyMetricsProps) {
           <DollarSign className="h-4 w-4 text-white" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-white">${(data.revenue?.totalRevenue || 0).toLocaleString()}</div>
+          <div className="text-2xl font-bold text-white">${toEnglishLocaleString(data.revenue?.totalRevenue || 0)}</div>
           <div className="flex items-center text-xs text-blue-100">
             {(data.revenue?.revenueGrowth || 0) > 0 ? (
               <TrendingUp className="h-3 w-3 mr-1 text-green-200" />
@@ -35,7 +36,7 @@ export function KeyMetrics({ data }: KeyMetricsProps) {
           <ShoppingCart className="h-4 w-4 text-white" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-white">{(data.orders?.totalOrders || 0).toLocaleString()}</div>
+          <div className="text-2xl font-bold text-white">{toEnglishLocaleString(data.orders?.totalOrders || 0)}</div>
           <div className="flex items-center text-xs text-purple-100">
             {(data.orders?.orderGrowth || 0) > 0 ? (
               <TrendingUp className="h-3 w-3 mr-1 text-green-200" />

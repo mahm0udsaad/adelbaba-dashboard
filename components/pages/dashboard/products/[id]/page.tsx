@@ -14,6 +14,7 @@ import { getProduct, deleteProduct } from "@/src/services/products-api"
 import type { ProductContentBlock, ProductDetail } from "@/src/services/types/product-types"
 import { DeleteConfirmationDialog } from "../components/DeleteConfirmationDialog"
 import { toast } from "@/components/ui/use-toast"
+import { toEnglishLocaleString, toEnglishLocaleDateString } from "@/lib/utils"
 
 // Placeholder sub-components for displaying complex data. These should be in their own files.
 
@@ -210,7 +211,7 @@ export default function ProductDetailPage() {
       if (!value) return t.unknown
       const parsed = new Date(value)
       if (Number.isNaN(parsed.getTime())) return value
-      return parsed.toLocaleString()
+      return toEnglishLocaleDateString(parsed, { dateStyle: "short", timeStyle: "short" })
     },
     [t]
   )
@@ -284,7 +285,7 @@ export default function ProductDetailPage() {
                   <Star className="h-3.5 w-3.5 text-amber-500" />
                   <span>{ratingDisplay}</span>
                 </span>
-                <span>({product.reviews_count.toLocaleString()} {t.reviews})</span>
+                <span>({toEnglishLocaleString(product.reviews_count)} {t.reviews})</span>
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
                 {t.shownPriceLabel}: <span className="font-semibold text-primary">{product.shown_price || t.pricingNotAvailable}</span>
@@ -376,11 +377,11 @@ export default function ProductDetailPage() {
               <CardContent className="space-y-3">
                 <DetailRow label={t.productId} value={`#${product.id}`} />
                 <DetailRow label={t.productLabel} value={product.label || t.unknown} />
-                <DetailRow label={t.moq} value={`${product.moq.toLocaleString()} ${product.unit}`} />
-                <DetailRow label={t.inventory} value={product.inventory.toLocaleString()} />
+                <DetailRow label={t.moq} value={`${toEnglishLocaleString(product.moq)} ${product.unit}`} />
+                <DetailRow label={t.inventory} value={toEnglishLocaleString(product.inventory)} />
                 <DetailRow label={t.readyToShip} value={product.is_rts ? t.yes : t.no} />
-                <DetailRow label={t.skuCount} value={product.skus_count.toLocaleString()} />
-                <DetailRow label={t.reviews} value={product.reviews_count.toLocaleString()} />
+                <DetailRow label={t.skuCount} value={toEnglishLocaleString(product.skus_count)} />
+                <DetailRow label={t.reviews} value={toEnglishLocaleString(product.reviews_count)} />
                 <DetailRow label={t.ratingLabel} value={ratingDisplay} />
                 <DetailRow label={t.createdAtLabel} value={formatDateTime(product.created_at)} />
                 <DetailRow label={t.updatedAtLabel} value={formatDateTime(product.updated_at)} />

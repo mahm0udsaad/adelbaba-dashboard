@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleString, toEnglishLocaleDateString } from "@/lib/utils"
 import {
   InventoryOperationType,
   listInventoryLevels,
@@ -128,6 +129,7 @@ export default function InventoryPage() {
   const [search, setSearch] = useState<string>("")
   const [levels, setLevels] = useState<{ data: InventoryLevel[]; meta?: any } | null>(null)
   const [levelsLoading, setLevelsLoading] = useState(false)
+  const [allProducts, setAllProducts] = useState<any[]>([])
 
   // Low Stock state
   const [lowStock, setLowStock] = useState<{ data: LowStockItem[]; meta?: any } | null>(null)
@@ -456,7 +458,7 @@ export default function InventoryPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-orange-100 font-medium">Total On Hand</p>
-                    <p className="text-2xl font-bold text-white">{overviewStats.totalOnHand.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-white">{toEnglishLocaleString(overviewStats.totalOnHand)}</p>
                   </div>
                   <TrendingUp className="h-8 w-8 text-white opacity-80" />
                 </div>
@@ -467,7 +469,7 @@ export default function InventoryPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-red-100 font-medium">Reserved</p>
-                    <p className="text-2xl font-bold text-white">{overviewStats.totalReserved.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-white">{toEnglishLocaleString(overviewStats.totalReserved)}</p>
                   </div>
                   <Clock className="h-8 w-8 text-white opacity-80" />
                 </div>
@@ -891,7 +893,7 @@ export default function InventoryPage() {
                               <span className="text-sm">{row.warehouse?.name}</span>
                             </TableCell>
                             <TableCell>
-                              <span className="text-xs text-muted-foreground">{new Date(row.created_at).toLocaleString()}</span>
+                              <span className="text-xs text-muted-foreground">{toEnglishLocaleDateString(row.created_at, { dateStyle: "short", timeStyle: "short" })}</span>
                             </TableCell>
                             <TableCell>
                               <span className="text-xs">{row.performedBy?.name}</span>
@@ -962,7 +964,7 @@ export default function InventoryPage() {
                             )}
                             {w.storage_capacity && (
                               <p className="text-xs text-muted-foreground">
-                                Capacity: {w.storage_capacity.toLocaleString()} units
+                                Capacity: {toEnglishLocaleString(w.storage_capacity)} units
                               </p>
                             )}
                           </div>

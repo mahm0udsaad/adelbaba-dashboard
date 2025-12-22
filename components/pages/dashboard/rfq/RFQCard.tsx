@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { FileText, Eye, DollarSign, MapPin, Building, Calendar, AlertCircle } from "lucide-react"
 import type { RFQListItem } from "@/src/services/rfq-api"
 import { useI18n } from "@/lib/i18n/context"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 interface RFQDisplay extends RFQListItem {
   buyerCompany: string
@@ -111,7 +112,7 @@ export function RFQCard({
             <div className="flex items-center gap-6 text-sm">
               <div>
                 <span className="text-muted-foreground">{t.rfqTargetQuantity}</span>
-                <span className="font-medium ml-1">{rfq.targetQty?.toLocaleString() || t.unknown}</span>
+                <span className="font-medium ml-1">{rfq.targetQty ? toEnglishLocaleString(rfq.targetQty) : t.unknown}</span>
               </div>
               <div>
                 <span className="text-muted-foreground">{t.rfqTargetPrice}</span>

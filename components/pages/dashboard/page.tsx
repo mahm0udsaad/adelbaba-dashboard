@@ -18,6 +18,7 @@ import { useI18n } from "@/lib/i18n/context"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { formatCurrency as formatCurrencyUtil, toEnglishLocaleDateString } from "@/lib/utils"
 import {
   FileText,
   ShoppingCart,
@@ -59,13 +60,7 @@ const getTimeRemaining = (expiresAt: string | null | undefined, t: any) => {
 }
 
 const formatCurrency = (amount: string | number, currency: string = 'USD') => {
-  const num = typeof amount === 'string' ? parseFloat(amount) : amount
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(num)
+  return formatCurrencyUtil(amount, currency)
 }
 
 const calculateMonthlyRevenue = (orders: OrderListItem[]): number => {
@@ -337,7 +332,7 @@ export default function DashboardPage() {
                       {order.user?.name || order.user?.email || t.unknown || "Unknown"}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(order.created_at).toLocaleDateString()}
+                      {toEnglishLocaleDateString(order.created_at)}
                     </p>
                     {order.items_count > 0 && (
                       <p className="text-xs text-muted-foreground">

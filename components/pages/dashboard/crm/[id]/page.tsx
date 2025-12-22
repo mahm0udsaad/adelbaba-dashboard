@@ -24,6 +24,7 @@ import {
 
 import type { CRMContactDetail, CRMNote } from "@/src/services/crm-api"
 import { crmApi } from "@/src/services/crm-api"
+import { toEnglishLocaleString, toEnglishLocaleDateString } from "@/lib/utils"
 
 // Remove local mock; details now fetched via API
 
@@ -225,7 +226,7 @@ export default function ContactDetailPage() {
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Last Contact</p>
-                  <p className="text-sm text-muted-foreground">{new Date(contact.updated_at || contact.created_at || new Date().toISOString()).toLocaleDateString()}</p>
+                  <p className="text-sm text-muted-foreground">{toEnglishLocaleDateString(contact.updated_at || contact.created_at || new Date().toISOString())}</p>
                 </div>
               </div>
             </CardContent>
@@ -256,11 +257,11 @@ export default function ContactDetailPage() {
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm font-medium">Total Revenue</span>
                 </div>
-                <span className="text-lg font-bold">${Number(contact.total_spent).toLocaleString()}</span>
+                <span className="text-lg font-bold">${toEnglishLocaleString(contact.total_spent)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Avg. Order Value</span>
-                <span className="text-lg font-bold">${Number(contact.avg_order_value).toLocaleString()}</span>
+                <span className="text-lg font-bold">${toEnglishLocaleString(contact.avg_order_value)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">RFQs</span>
@@ -348,7 +349,7 @@ export default function ContactDetailPage() {
                         <div className="flex items-start justify-between">
                           <div>
                             <p className="text-sm whitespace-pre-wrap">{n.note}</p>
-                            <p className="text-xs text-muted-foreground mt-1">{new Date(n.updated_at || n.created_at).toLocaleString()}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{toEnglishLocaleDateString(n.updated_at || n.created_at, { dateStyle: "short", timeStyle: "short" })}</p>
                           </div>
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm" onClick={() => handleEditNote(n)}>
@@ -422,7 +423,7 @@ export default function ContactDetailPage() {
                         {interaction.interaction_type}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground">{new Date(interaction.created_at).toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground">{toEnglishLocaleDateString(interaction.created_at, { dateStyle: "short", timeStyle: "short" })}</p>
                   </div>
                 ))}
               </div>

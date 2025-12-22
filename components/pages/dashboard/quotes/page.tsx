@@ -199,7 +199,7 @@ export default function QuotesPage() {
                         )}
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span>{new Date(quote.submitted_at).toLocaleDateString()}</span>
+                          <span>{toEnglishLocaleDateString(quote.submitted_at)}</span>
                         </div>
                       </div>
                     </div>

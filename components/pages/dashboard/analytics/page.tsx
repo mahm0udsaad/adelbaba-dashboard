@@ -13,6 +13,7 @@ import { TopLists } from "./components/TopLists"
 import { AnalyticsProvider, useAnalytics } from "@/lib/analytics-context"
 import type { AnalyticsData } from "./components/types"
 import { format, subMonths } from "date-fns"
+import { toEnglishLocaleString } from "@/lib/utils"
 
 const emptyAnalyticsData: AnalyticsData = {
   revenue: {
@@ -132,7 +133,7 @@ function AnalyticsContent({ period, setPeriod }: { period: string; setPeriod: (v
             <DollarSign className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">${(analyticsData.revenue?.totalRevenue || 0).toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">${toEnglishLocaleString(analyticsData.revenue?.totalRevenue || 0)}</div>
             <div className="flex items-center text-xs text-blue-100">
               {(analyticsData.revenue?.revenueGrowth || 0) > 0 ? (
                 <TrendingUp className="h-3 w-3 mr-1 text-green-200" />
@@ -150,7 +151,7 @@ function AnalyticsContent({ period, setPeriod }: { period: string; setPeriod: (v
             <ShoppingCart className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{(analyticsData.orders?.totalOrders || 0).toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">{toEnglishLocaleString(analyticsData.orders?.totalOrders || 0)}</div>
             <div className="flex items-center text-xs text-purple-100">
               {(analyticsData.orders?.orderGrowth || 0) > 0 ? (
                 <TrendingUp className="h-3 w-3 mr-1 text-green-200" />
