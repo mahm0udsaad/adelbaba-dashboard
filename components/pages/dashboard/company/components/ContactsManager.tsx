@@ -5,6 +5,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { useI18n } from "@/lib/i18n/context"
 import { CompanyContact } from "@/src/services/company-api"
 import { Plus, Trash2, CheckCircle2 } from "lucide-react"
@@ -17,18 +27,27 @@ interface ContactsManagerProps {
 
 export function ContactsManager({ contacts, onChange }: ContactsManagerProps) {
   const { t } = useI18n()
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null)
 
   const addContact = () => {
     onChange([...contacts, { phone: "", email: "", is_primary: contacts.length === 0 }])
   }
 
-  const removeContact = (idx: number) => {
-    const newContacts = contacts.filter((_, i) => i !== idx)
+  const confirmDelete = (idx: number) => {
+    setDeleteIndex(idx)
+  }
+
+  const removeContact = () => {
+    if (deleteIndex === null) return
+    
+    const contactToRemove = contacts[deleteIndex]
+    const newContacts = contacts.filter((_, i) => i !== deleteIndex)
     // Ensure at least one primary if we have contacts
-    if (contacts[idx].is_primary && newContacts.length > 0) {
+    if (contactToRemove.is_primary && newContacts.length > 0) {
       newContacts[0].is_primary = true
     }
     onChange(newContacts)
+    setDeleteIndex(null)
   }
 
   const updateContact = (idx: number, field: keyof CompanyContact, value: any) => {
@@ -94,7 +113,7 @@ export function ContactsManager({ contacts, onChange }: ContactsManagerProps) {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => removeContact(idx)}
+                  onClick={() => confirmDelete(idx)}
                   className="text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -104,6 +123,28 @@ export function ContactsManager({ contacts, onChange }: ContactsManagerProps) {
           </Card>
         ))}
       </div>
+
+      <AlertDialog open={deleteIndex !== null} onOpenChange={(open) => !open && setDeleteIndex(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t.deleteContact || "Delete Contact"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteIndex !== null && contacts[deleteIndex]?.id
+                ? t.deleteContactConfirmation || "Are you sure you want to delete this contact? This contact will be permanently removed when you save your changes."
+                : t.removeContactConfirmation || "Are you sure you want to remove this contact? This contact will not be saved."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t.cancel || "Cancel"}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={removeContact}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {t.delete || "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

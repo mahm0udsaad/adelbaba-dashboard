@@ -13,10 +13,15 @@ import { toast } from "@/hooks/use-toast"
 import { toEnglishLocaleString } from "@/lib/utils"
 
 // Map API response to frontend Order type
-function mapApiOrderToOrder(apiOrder: OrderListItem): Order {
+function mapApiOrderToOrder(apiOrder: OrderListItem | any): Order {
+  // Handle both 'user' and 'customer' fields from API
+  const customer = (apiOrder as any).customer || apiOrder.user
+  const buyerName = customer?.name || "Unknown Buyer"
+  
   return {
-    id: apiOrder.order_number || `#${apiOrder.id}`,
-    buyerCompany: apiOrder.user?.name || "Unknown Buyer",
+    number: apiOrder.order_number || `#${apiOrder.id}`,
+    id: apiOrder.id.toString(),
+    buyerCompany: buyerName,
     items: [], // Items list not included in list endpoint
     currency: "USD", // Default currency
     total: parseFloat(apiOrder.total_amount) || 0,
@@ -64,6 +69,7 @@ export default function OrdersPage() {
       const response = await ordersApi.list(params)
       const mappedOrders = response.data.map(mapApiOrderToOrder)
       setAllOrders(mappedOrders)
+      console.log(response.data)
     } catch (err) {
       console.error("Failed to fetch orders:", err)
       setError("Failed to load orders")

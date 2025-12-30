@@ -49,6 +49,8 @@ export const companyApi = {
       fd.append("description", payload.description)
     }
     
+    // Only send contacts that are in the array - contacts removed from the array
+    // will be deleted on the backend (not included in request = deleted)
     payload.contacts.forEach((contact, idx) => {
       if (contact.id) fd.append(`contacts[${idx}][id]`, String(contact.id))
       fd.append(`contacts[${idx}][phone]`, contact.phone)

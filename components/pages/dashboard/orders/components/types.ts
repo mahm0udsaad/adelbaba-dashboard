@@ -9,6 +9,7 @@ export interface OrderItem {
 
 export interface Order {
   id: string
+  number: string
   buyerCompany: string
   items: OrderItem[]
   currency: string

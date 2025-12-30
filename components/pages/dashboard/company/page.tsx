@@ -34,6 +34,8 @@ export default function CompanyProfilePage() {
       // Map company contacts if they exist in the company object
       if ((company as any).contacts && Array.isArray((company as any).contacts)) {
         setContacts((company as any).contacts)
+        console.log(company);
+        
       } else if (contacts.length === 0) {
         setContacts([{ phone: "", email: "", is_primary: true }])
       }
